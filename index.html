@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Startup and Innovation Cell | PICT</title>
+    <!-- Google Fonts for Institutional Aesthetic -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,600&display=swap" rel="stylesheet">
+    <!-- Lucide Icons (already installed) -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- AOS Animations -->
+      </head>
+  <body>
+    <div class="scroll-progress"></div>
+    <div class="cursor-dot"></div>
+    <div class="cursor-outline"></div>
+    <div class="noise-overlay"></div>
+    <!-- Cinematic Preloader -->
+    <div id="preloader">
+      <div class="loader-content">
+        <img src="/images/logo.png" alt="Loading..." class="loader-logo">
+        <div class="loader-progress">
+          <span class="progress-text" id="progress-text">0%</span>
+          <div class="progress-bar-container">
+            <div class="progress-bar" id="progress-bar"></div>
+          </div>
+        </div>
+      </div>
+      <div class="intro-animation-container" style="display: none;">
+        <div class="intro-line">Startup &</div>
+        <div class="intro-line">Innovation</div>
+        <div class="intro-line">Cell PICT</div>
+      </div>
+    </div>
+
+    <!-- Premium Main Navbar -->
+    <nav class="navbar bg-red-textured">
+      <div class="container nav-content">
+        <a href="#" class="logo">
+          <img src="/images/logo.png" alt="SIC PICT Logo" class="logo-img">
+          <span class="logo-text">SIC PICT</span>
+        </a>
+        <div class="nav-links-center">
+          <a href="#about" class="nav-link">About</a>
+          <a href="#initiatives" class="nav-link">Initiatives</a>
+          <a href="#portfolio" class="nav-link">Portfolio</a>
+          <a href="#leadership" class="nav-link">Leadership</a>
+        </div>
+        <div class="nav-actions">
+          <a href="#apply" class="btn-nav magnetic">Apply Now <i data-lucide="arrow-right"></i></a>
+        </div>
+        <div class="hamburger">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </div>
+    </nav>
+
+    <main>
+      <!-- Hero Section -->
+      <header class="hero bg-red-textured">
+        <div class="hero-overlay" data-speed="0.5"></div>
+        <div class="container hero-container">
+          <div class="hero-content" data-aos="fade-up" data-aos-duration="1000">
+            <h4 class="hero-kicker">Pune Institute of Computer Technology</h4>
+            <h1 class="hero-title gsap-reveal">
+              Catalyzing Innovation,<br>Forging 
+              <span class="text-cube-container">
+                <span class="text-cube">
+                  <span class="cube-face cube-front">Leaders.</span>
+                  <span class="cube-face cube-bottom">Founders.</span>
+                  <span class="cube-face cube-back">Startups.</span>
+                  <span class="cube-face cube-top">Visionaries.</span>
+                </span>
+              </span>
+            </h1>
+            <p class="hero-subtitle">The Startup and Innovation Cell (SIC) is PICT’s premier incubation center, dedicated to transforming student ideas into highly scalable, industry-defining enterprises.</p>
+            <div class="hero-actions">
+              <a href="#apply" class="btn-primary magnetic">Incubate With Us</a>
+              <a href="#initiatives" class="btn-outline magnetic">Explore Programs</a>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Impact Metrics -->
+      <section class="impact-metrics bg-red-textured">
+        <div class="container">
+          <div class="metrics-grid">
+            <div class="metric-item" data-aos="fade-up" data-aos-delay="100">
+              <h2 class="metric-number">₹15M+</h2>
+              <p class="metric-label">Funding Raised</p>
+            </div>
+            <div class="metric-item" data-aos="fade-up" data-aos-delay="200">
+              <h2 class="metric-number">40+</h2>
+              <p class="metric-label">Startups Incubated</p>
+            </div>
+            <div class="metric-item" data-aos="fade-up" data-aos-delay="300">
+              <h2 class="metric-number">120+</h2>
+              <p class="metric-label">Industry Mentors</p>
+            </div>
+            <div class="metric-item" data-aos="fade-up" data-aos-delay="400">
+              <h2 class="metric-number">15+</h2>
+              <p class="metric-label">Patents Filed</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- About Section -->
+      <section id="about" class="section-padding about-section">
+        <div class="container">
+          <div class="grid-2-col">
+            <div class="about-content" data-aos="fade-right">
+              <h2 class="section-heading gsap-reveal">Fostering an Ecosystem of Excellence</h2>
+              <p class="lead-text">Established with the vision of making PICT a global hub for entrepreneurship, SIC provides end-to-end support for visionary founders.</p>
+              <p>We bridge the gap between academia and industry. Through rigorous mentorship, strategic funding partnerships, and state-of-the-art infrastructure, we ensure that technological breakthroughs within our campus successfully transition into the global market.</p>
+              <ul class="feature-list">
+                <li><i data-lucide="check-circle" class="icon-gold"></i> Pre-incubation & Incubation Support</li>
+                <li><i data-lucide="check-circle" class="icon-gold"></i> Seed Funding & VC Networking</li>
+                <li><i data-lucide="check-circle" class="icon-gold"></i> Legal & IP Compliance Assistance</li>
+              </ul>
+            </div>
+            <div class="about-visual" data-aos="fade-left">
+              <div class="image-stack">
+                <img src="/images/about_image.png" alt="Students in Lab" class="img-front" data-speed="0.8">
+                <div class="img-backdrop"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Initiatives Section -->
+      <section id="initiatives" class="section-padding bg-red-textured">
+        <div class="container">
+          <div class="section-header text-center">
+            <h2 class="section-heading gsap-reveal">Our Flagship Initiatives</h2>
+            <p class="section-subheading text-light">Comprehensive programs designed to nurture startups from ideation to scale.</p>
+          </div>
+          <div class="grid-3-col">
+            <div class="initiative-card" data-aos="fade-up" data-aos-delay="100">
+              <div class="card-icon"><i data-lucide="rocket"></i></div>
+              <h3>Incubation Program</h3>
+              <p>A rigorous 12-month program offering workspace, mentorship, and initial seed grants for high-potential tech startups.</p>
+              <a href="#" class="link-arrow magnetic">Learn more <i data-lucide="arrow-right"></i></a>
+            </div>
+            <div class="initiative-card" data-aos="fade-up" data-aos-delay="200">
+              <div class="card-icon"><i data-lucide="lightbulb"></i></div>
+              <h3>E-Summit PICT</h3>
+              <p>Our annual flagship entrepreneurship summit featuring keynote speakers, pitching events, and networking with top VCs.</p>
+              <a href="#" class="link-arrow magnetic">Learn more <i data-lucide="arrow-right"></i></a>
+            </div>
+            <div class="initiative-card" data-aos="fade-up" data-aos-delay="300">
+              <div class="card-icon"><i data-lucide="users"></i></div>
+              <h3>Mentorship Network</h3>
+              <p>1-on-1 guidance from successful alumni founders and industry veterans spanning deep tech, SaaS, and fintech sectors.</p>
+              <a href="#" class="link-arrow magnetic">Learn more <i data-lucide="arrow-right"></i></a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Portfolio Section -->
+      <section id="portfolio" class="portfolio-scroll-section section-padding">
+        <div class="container">
+          <div class="section-header">
+            <h2 class="section-heading gsap-reveal">Featured Portfolio</h2>
+            <p class="section-subheading">Discover the groundbreaking companies built within the SIC ecosystem.</p>
+          </div>
+        </div>
+        
+        <div class="portfolio-horizontal-wrapper">
+          <div class="portfolio-track">
+            <article class="portfolio-item item-dark bg-red-textured">
+              <div class="portfolio-img" data-speed="0.9">
+                <img src="/images/startup_image.png" alt="AeroTech Drone">
+              </div>
+              <div class="portfolio-info">
+                <span class="industry-tag">Deep Tech</span>
+                <h3>AeroTech Dynamics</h3>
+                <p>Developing autonomous drone delivery systems for urban healthcare logistics. Raised $2M in seed funding.</p>
+              </div>
+            </article>
+            <article class="portfolio-item item-dark bg-red-textured">
+              <div class="portfolio-img" data-speed="0.9">
+                <img src="/images/startup_image.png" alt="FinFlow Platform">
+              </div>
+              <div class="portfolio-info">
+                <span class="industry-tag">FinTech</span>
+                <h3>FinFlow</h3>
+                <p>AI-driven micro-investment platform democratizing wealth management for students and early professionals.</p>
+              </div>
+            </article>
+            <article class="portfolio-item item-dark bg-red-textured">
+              <div class="portfolio-img" data-speed="0.9">
+                <img src="/images/startup_image.png" alt="EcoSense">
+              </div>
+              <div class="portfolio-info">
+                <span class="industry-tag">CleanTech</span>
+                <h3>EcoSense Analytics</h3>
+                <p>IoT sensor networks for precise agricultural water management. Acquired by AgriTech Global.</p>
+              </div>
+            </article>
+            <article class="portfolio-item item-dark bg-red-textured">
+              <div class="portfolio-img" data-speed="0.9">
+                <img src="/images/startup_image.png" alt="NeuralLink">
+              </div>
+              <div class="portfolio-info">
+                <span class="industry-tag">AI / SaaS</span>
+                <h3>NeuralSync</h3>
+                <p>API-first infrastructure for real-time generative AI video processing. Backed by Y Combinator.</p>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- Leadership Section -->
+      <section id="leadership" class="section-padding bg-red-textured text-white">
+        <div class="container container-large">
+          <div class="section-header text-center">
+            <h2 class="section-heading text-white gsap-reveal">Leadership & Advisory</h2>
+            <p class="section-subheading text-light">Guided by academic excellence and industry expertise.</p>
+          </div>
+          <div class="grid-5-col">
+            <a href="https://www.linkedin.com/in/neel-shingavi/" target="_blank" class="profile-card magnetic" data-aos="zoom-in" data-aos-delay="100">
+              <div class="profile-img-wrapper">
+              <img src="/images/team_image.png" alt="Siddhant Patil">
+            </div>
+              <div class="profile-info">
+                <h4>Siddhant Patil</h4>
+                <p>XYZ role</p>
+              </div>
+            </a>
+            <a href="https://www.linkedin.com/in/neel-shingavi/" target="_blank" class="profile-card magnetic" data-aos="zoom-in" data-aos-delay="200">
+              <div class="profile-img-wrapper">
+              <img src="/images/team_image.png" alt="Tanvi Malviya">
+            </div>
+              <div class="profile-info">
+                <h4>Tanvi Malviya</h4>
+                <p>General Secretary</p>
+              </div>
+            </a>
+            <a href="https://www.linkedin.com/in/neel-shingavi/" target="_blank" class="profile-card magnetic" data-aos="zoom-in" data-aos-delay="300">
+              <div class="profile-img-wrapper">
+              <img src="/images/team_image.png" alt="Ameya Surve">
+            </div>
+              <div class="profile-info">
+                <h4>Ameya Surve</h4>
+                <p>President</p>
+              </div>
+            </a>
+            <a href="https://www.linkedin.com/in/neel-shingavi/" target="_blank" class="profile-card magnetic" data-aos="zoom-in" data-aos-delay="400">
+              <div class="profile-img-wrapper">
+              <img src="/images/team_image.png" alt="Neel Shingavi">
+            </div>
+              <div class="profile-info">
+                <h4>Neel Shingavi</h4>
+                <p>Technical Head</p>
+              </div>
+            </a>
+            <a href="https://www.linkedin.com/in/neel-shingavi/" target="_blank" class="profile-card magnetic" data-aos="zoom-in" data-aos-delay="500">
+              <div class="profile-img-wrapper">
+              <img src="/images/team_image.png" alt="Shrawani Chowkone">
+            </div>
+              <div class="profile-info">
+                <h4>Shrawani Chowkone</h4>
+                <p>Video Editing</p>
+              </div>
+            </a>
+            <a href="https://www.linkedin.com/in/neel-shingavi/" target="_blank" class="profile-card magnetic" data-aos="zoom-in" data-aos-delay="100">
+              <div class="profile-img-wrapper">
+              <img src="/images/team_image.png" alt="Aditya Birajdar">
+            </div>
+              <div class="profile-info">
+                <h4>Aditya Birajdar</h4>
+                <p>XYZ role</p>
+              </div>
+            </a>
+            <a href="https://www.linkedin.com/in/neel-shingavi/" target="_blank" class="profile-card magnetic" data-aos="zoom-in" data-aos-delay="200">
+              <div class="profile-img-wrapper">
+              <img src="/images/team_image.png" alt="Shrawani Nikam">
+            </div>
+              <div class="profile-info">
+                <h4>Shrawani Nikam</h4>
+                <p>XYZ role</p>
+              </div>
+            </a>
+            <a href="https://www.linkedin.com/in/neel-shingavi/" target="_blank" class="profile-card magnetic" data-aos="zoom-in" data-aos-delay="300">
+              <div class="profile-img-wrapper">
+              <img src="/images/team_image.png" alt="Ahan Mhadgut">
+            </div>
+              <div class="profile-info">
+                <h4>Ahan Mhadgut</h4>
+                <p>XYZ role</p>
+              </div>
+            </a>
+            <a href="https://www.linkedin.com/in/neel-shingavi/" target="_blank" class="profile-card magnetic" data-aos="zoom-in" data-aos-delay="400">
+              <div class="profile-img-wrapper">
+              <img src="/images/team_image.png" alt="Amisha Mamtani">
+            </div>
+              <div class="profile-info">
+                <h4>Amisha Mamtani</h4>
+                <p>XYZ role</p>
+              </div>
+            </a>
+            <a href="https://www.linkedin.com/in/neel-shingavi/" target="_blank" class="profile-card magnetic" data-aos="zoom-in" data-aos-delay="500">
+              <div class="profile-img-wrapper">
+              <img src="/images/team_image.png" alt="Anushtubh Ghasing">
+            </div>
+              <div class="profile-info">
+                <h4>Anushtubh Ghasing</h4>
+                <p>XYZ role</p>
+              </div>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <!-- Application / Contact Form -->
+      <section id="apply" class="section-padding bg-light">
+        <div class="container">
+          <div class="form-container box-shadow" data-aos="fade-up">
+            <div class="form-header text-center">
+              <h2 class="section-heading gsap-reveal">Apply for Incubation</h2>
+              <p>Submit your proposal to join the upcoming cohort. Our committee reviews applications on a rolling basis.</p>
+            </div>
+            <form class="institutional-form" onsubmit="event.preventDefault(); alert('Application Received.');">
+              <div class="form-row">
+                <div class="input-group">
+                  <label for="founderName">Founder Name</label>
+                  <input type="text" id="founderName" required>
+                </div>
+                <div class="input-group">
+                  <label for="emailAddr">Official Email</label>
+                  <input type="email" id="emailAddr" required>
+                </div>
+              </div>
+              <div class="input-group">
+                <label for="startupName">Startup Name / Project Title</label>
+                <input type="text" id="startupName" required>
+              </div>
+              <div class="input-group">
+                <label for="stage">Current Stage</label>
+                <select id="stage" required>
+                  <option value="" disabled selected>Select Stage</option>
+                  <option value="idea">Idea / Conceptualization</option>
+                  <option value="prototype">Prototype Ready</option>
+                  <option value="revenue">Early Revenue</option>
+                </select>
+              </div>
+              <div class="input-group">
+                <label for="pitch">Executive Summary</label>
+                <textarea id="pitch" rows="5" placeholder="Briefly describe your problem statement and solution..." required></textarea>
+              </div>
+              <button type="submit" class="btn-primary form-submit">Submit Proposal</button>
+            </form>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Infinite Marquee Section -->
+    <section class="marquee-section">
+      <div class="marquee-content">
+        <span class="marquee-text">FOSTERING INNOVATION ✦ BUILDING LEADERS ✦ EMPOWERING STARTUPS ✦</span>
+        <span class="marquee-text">FOSTERING INNOVATION ✦ BUILDING LEADERS ✦ EMPOWERING STARTUPS ✦</span>
+      </div>
+    </section>
+
+    <!-- Institutional Footer -->
+    <footer class="inst-footer bg-red-textured">
+      <div class="container">
+        <div class="footer-grid">
+          <div class="footer-brand">
+            <img src="/images/logo.png" alt="SIC Logo" class="footer-logo">
+            <p>Startup and Innovation Cell<br>Pune Institute of Computer Technology</p>
+            <p class="address">Survey No. 27, Near Trimurti Chowk,<br>Dhankawadi, Pune, Maharashtra 411043</p>
+          </div>
+          <div class="footer-links">
+            <h4>Institution</h4>
+            <ul>
+              <li><a href="#">About PICT</a></li>
+              <li><a href="#">Administration</a></li>
+              <li><a href="#">Academic Programs</a></li>
+              <li><a href="#">Research & Development</a></li>
+            </ul>
+          </div>
+          <div class="footer-links">
+            <h4>Quick Links</h4>
+            <ul>
+              <li><a href="#initiatives">Our Initiatives</a></li>
+              <li><a href="#portfolio">Startups Portfolio</a></li>
+              <li><a href="#apply">Apply for Incubation</a></li>
+              <li><a href="#">Careers at SIC</a></li>
+            </ul>
+          </div>
+          <div class="footer-newsletter">
+            <h4>Stay Updated</h4>
+            <p>Subscribe to our newsletter for updates on events, incubation cohorts, and startup news.</p>
+            <form class="newsletter-form" onsubmit="event.preventDefault();">
+              <input type="email" placeholder="Your email address" required>
+              <button type="submit" class="btn-primary magnetic">Subscribe</button>
+            </form>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <p>&copy; 2026 Startup and Innovation Cell, PICT. All rights reserved.</p>
+          <div class="footer-legal">
+            <a href="#">Privacy Policy</a>
+            <a href="#">Terms of Service</a>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+        <script type="module" src="/src/main.js"></script>
+    <script>
+      lucide.createIcons();
+    </script>
+  </body>
+</html>
