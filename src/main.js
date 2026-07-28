@@ -684,6 +684,13 @@ window.onload = () => {
 
         const state = Flip.getState(card);
         card.classList.remove('is-expanded');
+        gsap.set(card, { clearProps: 'top,left' });
+        
+        if (card._placeholder) {
+          card._placeholder.remove();
+          card._placeholder = null;
+        }
+
         // Return card to its original position in grid
         Flip.from(state, {
           duration: 0.55,
@@ -713,8 +720,15 @@ window.onload = () => {
         const expanded = document.querySelector('.profile-card.is-expanded');
         if (expanded && expanded !== card) {
           const prevState = Flip.getState(expanded);
-          currentExpandedCard = null;
           expanded.classList.remove('is-expanded');
+          gsap.set(expanded, { clearProps: 'top,left' });
+          
+          if (expanded._placeholder) {
+            expanded._placeholder.remove();
+            expanded._placeholder = null;
+          }
+          
+          currentExpandedCard = null;
           Flip.from(prevState, { duration: 0.3, ease: 'power2.in', absolute: true });
         }
 
@@ -725,6 +739,17 @@ window.onload = () => {
           lastFocusedTrigger = document.activeElement;
 
           const state = Flip.getState(card);
+          
+          if (!card._placeholder) {
+            const placeholder = document.createElement('div');
+            placeholder.className = 'profile-placeholder';
+            const rect = card.getBoundingClientRect();
+            placeholder.style.width = rect.width + 'px';
+            placeholder.style.height = rect.height + 'px';
+            card.parentNode.insertBefore(placeholder, card);
+            card._placeholder = placeholder;
+          }
+
           card.classList.add('is-expanded');
           card.setAttribute('role', 'dialog');
           card.setAttribute('aria-modal', 'true');
