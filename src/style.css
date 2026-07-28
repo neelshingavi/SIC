@@ -952,7 +952,7 @@ h1, h2, h3, h4 {
   gap: 2.5rem;
 }
 .initiative-card {
-  background: #fff;
+  background: var(--color-bg-light);
   padding: 3rem 2rem;
   border: 1px solid transparent;
   border-top: 4px solid var(--color-gold);

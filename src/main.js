@@ -610,16 +610,9 @@ window.onload = () => {
         rotY(0); 
       });
 
-      // Icon micro-animation on hover (§5.7)
+      // Icon micro-animation on hover (§5.7) removed as per user request
       const icon = card.querySelector('.card-icon');
-      if (icon) {
-        card.addEventListener('mouseenter', () => {
-          gsap.to(icon, { scale: 1.15, rotate: -8, duration: 0.4, ease: 'back.out(2)' });
-        });
-        card.addEventListener('mouseleave', () => {
-          gsap.to(icon, { scale: 1, rotate: 0, duration: 0.4, ease: 'power2.out' });
-        });
-      }
+      // No animation on icon hover
     });
 
     // ---------------------------------------------------------------
