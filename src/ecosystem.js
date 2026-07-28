@@ -15,7 +15,7 @@ export function initEcosystem() {
   // Hardcoded positions based on a 100x100 virtual grid, which we'll map to percentages
   // This gives a highly controlled radial layout without needing a physics engine
   const nodesData = {
-    'sic': { x: 50, y: 50, label: 'SIC PICT', type: 'center', desc: 'The central hub driving innovation and entrepreneurship at PICT.', img: '/images/logo.png' },
+    'sic': { x: 50, y: 50, label: 'SIC PICT', type: 'center', desc: 'The central hub driving innovation and entrepreneurship at PICT.', img: '/images/logo-optimized.png' },
 
     'mentors': { x: 32, y: 32, label: 'Mentors', type: 'cluster', desc: 'A curated network of seasoned founders providing strategic guidance.', icon: 'users' },
     'm1': { x: 12, y: 15, label: 'Tech', type: 'leaf', desc: 'Deep-tech mentoring in AI, Web3, and scalable systems.', icon: 'code' },
