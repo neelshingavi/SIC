@@ -1724,6 +1724,7 @@ button.hamburger {
   color: rgba(255,255,255,0.85);
   position: relative;
   overflow: hidden;
+  flex-shrink: 0;
 }
 
 .eco-node::after {
