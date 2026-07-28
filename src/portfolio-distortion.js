@@ -87,7 +87,7 @@ export function initPortfolioDistortion(containerEl) {
     // Handle image load
     const onLoad = () => {
       texture.image = imgEl;
-      program.uniforms.uImageResolution.value = [imgEl.naturalWidth, imgEl.naturalHeight];
+      if (typeof program !== "undefined") { program.uniforms.uImageResolution.value = [imgEl.naturalWidth, imgEl.naturalHeight]; } else { setTimeout(() => program.uniforms.uImageResolution.value = [imgEl.naturalWidth, imgEl.naturalHeight], 50); }
       gl.canvas.style.opacity = '1';
       imgEl.style.opacity = '0'; // Hide underlying image gracefully
     };

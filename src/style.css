@@ -1565,10 +1565,20 @@ h1, h2, h3, h4 {
   .portfolio-item {
     flex: 0 0 85vw;
     width: 85vw;
-    height: 60vh;
+    height: 450px;
     margin-right: 5vw;
     margin-left: 5vw;
     scroll-snap-align: center;
+  }
+  .portfolio-info {
+    padding: 1.5rem;
+  }
+  .portfolio-info h3 {
+    font-size: 1.8rem;
+    margin-bottom: 0.5rem;
+  }
+  .portfolio-info p {
+    font-size: 0.95rem;
   }
   
   /* Ecosystem Graph Scaling - Target inner .eco-node to preserve centering */
