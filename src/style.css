@@ -1051,19 +1051,22 @@ h1, h2, h3, h4 {
    ======================================== */
 .portfolio-scroll-section {
   overflow: hidden;
-  background-color: var(--color-bg-primary);
+  background-color: var(--color-bg-dark);
   height: 100vh;
   display: flex;
   flex-direction: column;
 }
 .portfolio-scroll-section .section-header {
-  color: var(--color-text-main);
+  color: #fff;
   flex-shrink: 0;
   padding-bottom: 0;
   text-align: center;
 }
+.portfolio-scroll-section .section-subheading {
+  color: rgba(255,255,255,0.8);
+}
 .portfolio-scroll-section .section-heading {
-  color: var(--color-red);
+  color: var(--color-gold);
 }
 .portfolio-horizontal-wrapper {
   overflow-x: hidden; /* GSAP will control this */
