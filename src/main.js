@@ -687,8 +687,7 @@ window.onload = () => {
         gsap.set(card, { clearProps: 'top,left' });
         
         if (card._placeholder) {
-          card._placeholder.remove();
-          card._placeholder = null;
+          card._placeholder.style.display = 'none';
         }
 
         // Return card to its original position in grid
@@ -696,7 +695,17 @@ window.onload = () => {
           duration: 0.55,
           ease: 'power3.inOut',
           absolute: true,
+          onComplete: () => {
+            if (card._placeholder) {
+              card._placeholder.remove();
+              card._placeholder = null;
+            }
+          }
         });
+        
+        if (card._placeholder) {
+          card._placeholder.style.display = 'block';
+        }
       };
 
       if (document.startViewTransition) {
@@ -724,12 +733,25 @@ window.onload = () => {
           gsap.set(expanded, { clearProps: 'top,left' });
           
           if (expanded._placeholder) {
-            expanded._placeholder.remove();
-            expanded._placeholder = null;
+            expanded._placeholder.style.display = 'none';
           }
           
           currentExpandedCard = null;
-          Flip.from(prevState, { duration: 0.3, ease: 'power2.in', absolute: true });
+          Flip.from(prevState, { 
+            duration: 0.3, 
+            ease: 'power2.in', 
+            absolute: true,
+            onComplete: () => {
+              if (expanded._placeholder) {
+                expanded._placeholder.remove();
+                expanded._placeholder = null;
+              }
+            }
+          });
+          
+          if (expanded._placeholder) {
+            expanded._placeholder.style.display = 'block';
+          }
         }
 
         e.preventDefault();
