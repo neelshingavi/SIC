@@ -1608,7 +1608,21 @@ h1, h2, h3, h4 {
 }
 
 @media (max-width: 576px) {
-  .grid-4-col, .grid-5-col { grid-template-columns: 1fr; }
+  .grid-4-col { grid-template-columns: 1fr; }
+  .grid-5-col { 
+    grid-template-columns: repeat(2, 1fr); 
+    gap: 2rem 1rem;
+  }
+  .grid-5-col .profile-info h4 {
+    font-size: 1.1rem;
+    margin-bottom: 0.1rem;
+  }
+  .grid-5-col .profile-info p {
+    font-size: 0.85rem;
+  }
+  .grid-5-col .expanded-linkedin-link {
+    font-size: 0.8rem;
+  }
   .hero-title { font-size: 2.2rem; }
   .hero-actions { flex-direction: column; }
   .hero-actions a { text-align: center; }
