@@ -20,7 +20,11 @@ import { initConstellation } from './constellation.js';
 import { initEcosystem } from './ecosystem.js';
 import { sound } from './sound.js';
 
-gsap.registerPlugin(ScrollTrigger, SplitText, DrawSVGPlugin, ScrambleTextPlugin, Flip, Observer);
+try {
+  gsap.registerPlugin(ScrollTrigger, SplitText, DrawSVGPlugin, ScrambleTextPlugin, Flip, Observer);
+} catch (error) {
+  console.warn('GSAP Club plugins not fully available, falling back to core features.', error);
+}
 
 // =====================================================================
 // GLOBAL: Reduced Motion Detection
@@ -73,173 +77,185 @@ if (!reduceMotion) {
 }
 
 // =====================================================================
-// PRELOADER — Session-aware, skip-capable, curtain reveal (§5.2)
+// PRELOADER — Session-aware, skip-capable, load-aware curtain reveal (§5.2)
 // =====================================================================
-window.onload = () => {
-  const preloader = document.getElementById('preloader');
-  const progressText = document.getElementById('progress-text');
-  const progressBar = document.getElementById('progress-bar');
-  const loaderContent = document.querySelector('.loader-content');
-  const skipBtn = document.getElementById('skip-intro');
-  const seenIntro = sessionStorage.getItem('sic_intro_seen');
+const preloader = document.getElementById('preloader');
+const progressText = document.getElementById('progress-text');
+const progressBar = document.getElementById('progress-bar');
+const loaderContent = document.querySelector('.loader-content');
+const skipBtn = document.getElementById('skip-intro');
+const seenIntro = sessionStorage.getItem('sic_intro_seen');
+const isBot = /bot|googlebot|crawler|spider|robot|crawling|lighthouse/i.test(navigator.userAgent);
 
-  let introSkipped = false;
+let introSkipped = false;
 
-  function skipToMain() {
-    if (introSkipped) return;
-    introSkipped = true;
-    gsap.killTweensOf('*');
-    
-    // Curtain reveal
-    const curtainTl = gsap.timeline({
-      onComplete: () => {
-        preloader.style.display = 'none';
-        gsap.set('.curtain-left', { xPercent: -101 });
-        gsap.set('.curtain-right', { xPercent: 101 });
-        initAnimations();
-      }
-    });
+function skipToMain() {
+  if (introSkipped) return;
+  introSkipped = true;
+  gsap.killTweensOf('*');
 
-    // Bring curtains in, then sweep them away
-    curtainTl
-      .set('.curtain-left', { xPercent: -101 })
-      .set('.curtain-right', { xPercent: 101 })
-      .to('.curtain-left', { xPercent: 0, duration: 0.6, ease: 'power3.inOut' }, 0)
-      .to('.curtain-right', { xPercent: 0, duration: 0.6, ease: 'power3.inOut' }, 0)
-      .set(preloader, { opacity: 0 })
-      .to('.curtain-left', { xPercent: -101, duration: 0.8, ease: 'expo.inOut' }, '+=0.1')
-      .to('.curtain-right', { xPercent: 101, duration: 0.8, ease: 'expo.inOut' }, '<');
+  // Curtain reveal
+  const curtainTl = gsap.timeline({
+    onComplete: () => {
+      if (preloader) preloader.style.display = 'none';
+      gsap.set('.curtain-left', { xPercent: -101 });
+      gsap.set('.curtain-right', { xPercent: 101 });
+      initAnimations();
+    }
+  });
 
-    sessionStorage.setItem('sic_intro_seen', '1');
-  }
+  // Bring curtains in, then sweep them away
+  curtainTl
+    .set('.curtain-left', { xPercent: -101 })
+    .set('.curtain-right', { xPercent: 101 })
+    .to('.curtain-left', { xPercent: 0, duration: 0.6, ease: 'power3.inOut' }, 0)
+    .to('.curtain-right', { xPercent: 0, duration: 0.6, ease: 'power3.inOut' }, 0)
+    .set(preloader, { opacity: 0 })
+    .to('.curtain-left', { xPercent: -101, duration: 0.8, ease: 'expo.inOut' }, '+=0.1')
+    .to('.curtain-right', { xPercent: 101, duration: 0.8, ease: 'expo.inOut' }, '<');
 
+  sessionStorage.setItem('sic_intro_seen', '1');
+}
+
+// Session-aware: fast-path for repeat visitors or bots
+if (seenIntro || reduceMotion || isBot) {
+  if (preloader) preloader.style.display = 'none';
+  window.addEventListener('load', initAnimations);
+} else {
   // Wire skip button
   if (skipBtn) {
     skipBtn.addEventListener('click', skipToMain);
-    // Fade in skip button after 800ms
     gsap.to(skipBtn, { opacity: 1, delay: 0.8, duration: 0.4 });
   }
 
-  // Session-aware: fast-path for repeat visitors or bots
-  const isBot = /bot|googlebot|crawler|spider|robot|crawling|lighthouse/i.test(navigator.userAgent);
-  if (seenIntro || reduceMotion || isBot) {
-    if (preloader) preloader.style.display = 'none';
-    initAnimations();
-    return;
-  }
+  let progressObj = { val: 0 };
+  
+  // Start fake progress immediately while waiting for network
+  let loadingTween = gsap.to(progressObj, {
+    val: 90,
+    duration: 3, // fallback duration if loading takes long
+    ease: 'power1.out',
+    onUpdate: () => {
+      if (introSkipped) return;
+      if (progressText) progressText.innerText = Math.floor(progressObj.val) + '%';
+      if (progressBar) progressBar.style.width = progressObj.val + '%';
+    }
+  });
 
-  if (preloader && progressText && progressBar && loaderContent) {
-    let progress = 0;
-    const duration = 2500;
-    const intervalTime = 30;
-    const increment = (100 / (duration / intervalTime));
+  // When assets are actually loaded, zip to 100% and finish
+  window.addEventListener('load', () => {
+    if (introSkipped) return;
+    loadingTween.kill();
+    
+    gsap.to(progressObj, {
+      val: 100,
+      duration: 0.4,
+      ease: 'power2.out',
+      onUpdate: () => {
+        if (introSkipped) return;
+        if (progressText) progressText.innerText = Math.floor(progressObj.val) + '%';
+        if (progressBar) progressBar.style.width = progressObj.val + '%';
+      },
+      onComplete: finishPreloader
+    });
+  });
+}
 
-    const counter = setInterval(() => {
-      if (introSkipped) { clearInterval(counter); return; }
-      progress += increment;
-      if (progress >= 100) {
-        progress = 100;
-        clearInterval(counter);
-        
-        // Fade out loader content
-        gsap.to(loaderContent, {
-          opacity: 0,
-          duration: 0.5,
+function finishPreloader() {
+  if (introSkipped) return;
+
+  // Fade out loader content
+  gsap.to(loaderContent, {
+    opacity: 0,
+    duration: 0.5,
+    onComplete: () => {
+      if (introSkipped) return;
+      if (loaderContent) loaderContent.style.display = 'none';
+
+      const introContainer = document.querySelector('.intro-animation-container');
+      if (introContainer) {
+        introContainer.style.display = 'flex';
+
+        const lines = document.querySelectorAll('.intro-line');
+        lines.forEach(line => {
+          const text = line.textContent.trim();
+          line.innerHTML = '';
+          const span = document.createElement('span');
+          span.className = 'intro-text';
+          span.textContent = text;
+          line.appendChild(span);
+        });
+
+        const tl = gsap.timeline({
           onComplete: () => {
             if (introSkipped) return;
-            loaderContent.style.display = 'none';
-            
-            const introContainer = document.querySelector('.intro-animation-container');
-            if (introContainer) {
-              introContainer.style.display = 'flex';
-              
-              const lines = document.querySelectorAll('.intro-line');
-              lines.forEach(line => {
-                const text = line.textContent.trim();
-                line.innerHTML = '';
-                const span = document.createElement('span');
-                span.className = 'intro-text';
-                span.textContent = text;
-                line.appendChild(span);
-              });
-              
-              const tl = gsap.timeline({
-                onComplete: () => {
-                  if (introSkipped) return;
-                  const heroContainer = document.querySelector('.hero-container');
-                  
-                  if (heroContainer) {
-                    gsap.set(heroContainer, { scale: 1.1 });
-                  }
+            const heroContainer = document.querySelector('.hero-container');
 
-                  // Curtain reveal transition
-                  const revealTl = gsap.timeline({
-                    onComplete: () => {
-                      preloader.style.display = 'none';
-                      gsap.set('.curtain-left', { xPercent: -101 });
-                      gsap.set('.curtain-right', { xPercent: 101 });
-                      sessionStorage.setItem('sic_intro_seen', '1');
-                      initAnimations();
-                    }
-                  });
+            if (heroContainer) {
+              gsap.set(heroContainer, { scale: 1.1 });
+            }
 
-                  revealTl
-                    .set('.curtain-left', { xPercent: -101 })
-                    .set('.curtain-right', { xPercent: 101 })
-                    .to('.curtain-left', { xPercent: 0, duration: 0.5, ease: 'power3.inOut' }, 0)
-                    .to('.curtain-right', { xPercent: 0, duration: 0.5, ease: 'power3.inOut' }, 0)
-                    .set(preloader, { display: 'none' })
-                    .to('.curtain-left', { xPercent: -101, duration: 1.2, ease: 'expo.inOut' }, '+=0.05')
-                    .to('.curtain-right', { xPercent: 101, duration: 1.2, ease: 'expo.inOut' }, '<');
-
-                  if (heroContainer) {
-                    revealTl.to(heroContainer, {
-                      scale: 1,
-                      duration: 1.4,
-                      ease: 'expo.inOut'
-                    }, '<');
-                  }
-                }
-              });
-              
-              tl.fromTo('.intro-line .intro-text', {
-                yPercent: 120,
-                rotation: 5,
-                opacity: 0
-              }, {
-                yPercent: 0,
-                rotation: 0,
-                opacity: 1,
-                duration: 1.4,
-                ease: 'expo.out',
-                stagger: 0.15
-              })
-              .to('.intro-line .intro-text', {
-                yPercent: -120,
-                rotation: -3,
-                opacity: 0,
-                duration: 0.9,
-                ease: 'expo.in',
-                stagger: 0.1,
-                delay: 0.5
-              });
-            } else {
-              preloader.style.opacity = '0';
-              setTimeout(() => {
-                preloader.style.display = 'none';
+            // Curtain reveal transition
+            const revealTl = gsap.timeline({
+              onComplete: () => {
+                if (preloader) preloader.style.display = 'none';
+                gsap.set('.curtain-left', { xPercent: -101 });
+                gsap.set('.curtain-right', { xPercent: 101 });
+                sessionStorage.setItem('sic_intro_seen', '1');
                 initAnimations();
-              }, 600);
+              }
+            });
+
+            revealTl
+              .set('.curtain-left', { xPercent: -101 })
+              .set('.curtain-right', { xPercent: 101 })
+              .to('.curtain-left', { xPercent: 0, duration: 0.5, ease: 'power3.inOut' }, 0)
+              .to('.curtain-right', { xPercent: 0, duration: 0.5, ease: 'power3.inOut' }, 0)
+              .set(preloader, { display: 'none' })
+              .to('.curtain-left', { xPercent: -101, duration: 1.2, ease: 'expo.inOut' }, '+=0.05')
+              .to('.curtain-right', { xPercent: 101, duration: 1.2, ease: 'expo.inOut' }, '<');
+
+            if (heroContainer) {
+              revealTl.to(heroContainer, {
+                scale: 1,
+                duration: 1.4,
+                ease: 'expo.inOut'
+              }, '<');
             }
           }
         });
+
+        tl.fromTo('.intro-line .intro-text', {
+          yPercent: 120,
+          rotation: 5,
+          opacity: 0
+        }, {
+          yPercent: 0,
+          rotation: 0,
+          opacity: 1,
+          duration: 1.4,
+          ease: 'expo.out',
+          stagger: 0.15
+        })
+          .to('.intro-line .intro-text', {
+            yPercent: -120,
+            rotation: -3,
+            opacity: 0,
+            duration: 0.9,
+            ease: 'expo.in',
+            stagger: 0.1,
+            delay: 0.5
+          });
+      } else {
+        if (preloader) preloader.style.opacity = '0';
+        setTimeout(() => {
+          if (preloader) preloader.style.display = 'none';
+          initAnimations();
+        }, 600);
       }
-      
-      progressText.innerText = Math.floor(progress) + '%';
-      progressBar.style.width = progress + '%';
-    }, intervalTime);
-  } else {
-    initAnimations();
-  }
+    }
+  });
+}
 
   // ===================================================================
   // MAIN ANIMATION INIT — everything fires after preloader is done
@@ -252,7 +268,7 @@ window.onload = () => {
     // ---------------------------------------------------------------
     if (!reduceMotion && supportsWebGL()) {
       initGrain(0.045);
-      
+
       const heroEl = document.querySelector('.hero');
       if (heroEl && window.innerWidth > 992) initHeroDistortion(heroEl);
 
@@ -275,24 +291,28 @@ window.onload = () => {
     let mm = gsap.matchMedia();
     mm.add("(min-width: 992px)", () => {
       const heroTl = gsap.timeline();
-      heroTl.fromTo('.hero-kicker', 
-        { y: 20, opacity: 0 }, 
+      heroTl.fromTo('.hero-kicker',
+        { y: 20, opacity: 0 },
         { y: 0, opacity: 1, duration: 0.8, ease: 'power3.out' }
       );
 
       // SplitText for hero title — handles nested .text-cube-container correctly
       const heroTitle = document.querySelector('.hero-title');
       if (heroTitle) {
-        // Omit `mask: 'words'` here! The mask's overflow:hidden breaks the 3D cube's preserve-3d context.
-        const heroSplit = new SplitText(heroTitle, { type: 'words' });
-        heroTl.from(heroSplit.words, {
-          y: 60, // use absolute y instead of yPercent since we aren't masking
-          rotationZ: 6,
-          opacity: 0,
-          duration: 1.4,
-          ease: 'expo.out',
-          stagger: 0.08,
-        }, '-=0.5');
+        if (!reduceMotion) {
+          // Omit `mask: 'words'` here! The mask's overflow:hidden breaks the 3D cube's preserve-3d context.
+          const heroSplit = new SplitText(heroTitle, { type: 'words' });
+          heroTl.from(heroSplit.words, {
+            y: 60, // use absolute y instead of yPercent since we aren't masking
+            rotationZ: 6,
+            opacity: 0,
+            duration: 1.4,
+            ease: 'expo.out',
+            stagger: 0.08,
+          }, '-=0.5');
+        } else {
+          heroTl.fromTo(heroTitle, { opacity: 0 }, { opacity: 1, duration: 1 }, '-=0.5');
+        }
       }
 
       heroTl.fromTo('.hero-subtitle',
@@ -300,11 +320,11 @@ window.onload = () => {
         { y: 0, opacity: 1, duration: 1, ease: 'power3.out' },
         '-=0.7'
       )
-      .fromTo('.hero-actions a',
-        { y: 20, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.6, stagger: 0.15, ease: 'power2.out' },
-        '-=0.5'
-      );
+        .fromTo('.hero-actions a',
+          { y: 20, opacity: 0 },
+          { y: 0, opacity: 1, duration: 0.6, stagger: 0.15, ease: 'power2.out' },
+          '-=0.5'
+        );
     });
 
     mm.add("(max-width: 991px)", () => {
@@ -320,19 +340,30 @@ window.onload = () => {
     const sectionHeadings = document.querySelectorAll('.section-heading');
     sectionHeadings.forEach(heading => {
       if (heading.closest('.hero')) return; // hero already handled above
-      
-      const split = new SplitText(heading, { type: 'words', mask: 'words' });
-      gsap.from(split.words, {
-        yPercent: 120,
-        rotationZ: 8,
-        duration: 1.4,
-        ease: 'expo.out',
-        stagger: 0.06,
-        scrollTrigger: {
-          trigger: heading,
-          start: 'top 90%',
-        }
-      });
+
+      if (!reduceMotion) {
+        const split = new SplitText(heading, { type: 'words', mask: 'words' });
+        gsap.from(split.words, {
+          yPercent: 120,
+          rotationZ: 8,
+          duration: 1.4,
+          ease: 'expo.out',
+          stagger: 0.06,
+          scrollTrigger: {
+            trigger: heading,
+            start: 'top 90%',
+          }
+        });
+      } else {
+        gsap.from(heading, {
+          opacity: 0,
+          duration: 0.5,
+          scrollTrigger: {
+            trigger: heading,
+            start: 'top 90%',
+          }
+        });
+      }
     });
 
     // ---------------------------------------------------------------
@@ -390,7 +421,7 @@ window.onload = () => {
     // ---------------------------------------------------------------
     const portfolioSection = document.querySelector('.portfolio-scroll-section');
     const portfolioTrack = document.querySelector('.portfolio-track');
-    
+
     if (portfolioSection && portfolioTrack) {
       let mm = gsap.matchMedia();
 
@@ -447,20 +478,16 @@ window.onload = () => {
     // ---------------------------------------------------------------
     const cursorDot = document.querySelector('.cursor-dot');
     const cursorOutline = document.querySelector('.cursor-outline');
-    
+
     if (cursorDot && cursorOutline) {
+      const outlineX = gsap.quickTo(cursorOutline, "x", {duration: 0.15, ease: "power2.out"});
+      const outlineY = gsap.quickTo(cursorOutline, "y", {duration: 0.15, ease: "power2.out"});
+
       document.addEventListener('mousemove', (e) => {
-        gsap.set(cursorDot, {
-          x: e.clientX,
-          y: e.clientY
-        });
-        gsap.to(cursorOutline, {
-          x: e.clientX,
-          y: e.clientY,
-          duration: 0.15,
-          ease: 'power2.out'
-        });
-      });
+        gsap.set(cursorDot, { x: e.clientX, y: e.clientY });
+        outlineX(e.clientX);
+        outlineY(e.clientY);
+      }, { passive: true });
 
       document.addEventListener('mousedown', () => {
         cursorOutline.classList.add('clicking');
@@ -509,19 +536,19 @@ window.onload = () => {
       lenis.on('scroll', (e) => {
         const velocity = e.velocity || 0;
         const skewXAmount = Math.min(Math.max(velocity * -0.5, -15), 15);
-        gsap.to('.portfolio-item, .profile-card', { 
-          skewX: skewXAmount, 
-          overwrite: 'auto', 
-          duration: 0.4, 
-          ease: 'power3.out' 
+        gsap.to('.portfolio-item, .profile-card', {
+          skewX: skewXAmount,
+          overwrite: 'auto',
+          duration: 0.4,
+          ease: 'power3.out'
         });
-        
+
         const skewYAmount = Math.min(Math.max(velocity * -0.15, -5), 5);
-        gsap.to('.initiative-card, .metric-item', { 
-          skewY: skewYAmount, 
-          overwrite: 'auto', 
-          duration: 0.4, 
-          ease: 'power3.out' 
+        gsap.to('.initiative-card, .metric-item', {
+          skewY: skewYAmount,
+          overwrite: 'auto',
+          duration: 0.4,
+          ease: 'power3.out'
         });
       });
     }
@@ -532,7 +559,7 @@ window.onload = () => {
     const parallaxElements = document.querySelectorAll('[data-speed]');
     parallaxElements.forEach(el => {
       const speed = parseFloat(el.getAttribute('data-speed'));
-      gsap.fromTo(el, 
+      gsap.fromTo(el,
         { yPercent: -15 * speed },
         {
           yPercent: 15 * speed,
@@ -605,9 +632,9 @@ window.onload = () => {
         rotY(px * 12);
         rotX(-py * 12);
       });
-      card.addEventListener('mouseleave', () => { 
-        rotX(0); 
-        rotY(0); 
+      card.addEventListener('mouseleave', () => {
+        rotX(0);
+        rotY(0);
       });
 
       // Icon micro-animation on hover (§5.7) removed as per user request
@@ -618,7 +645,7 @@ window.onload = () => {
     // ---------------------------------------------------------------
     // Leadership — Stagger reveal replacing dead AOS (§5.9)
     // ---------------------------------------------------------------
-    gsap.fromTo('.profile-card', 
+    gsap.fromTo('.profile-card',
       { y: 60, opacity: 0, scale: 0.9 },
       {
         y: 0,
@@ -678,32 +705,40 @@ window.onload = () => {
 
       collapseCardA11y();
 
-      // Fade out backdrop
-      gsap.to(flipBackdrop, { opacity: 0, duration: 0.3, onComplete: () => { flipBackdrop.style.pointerEvents = 'none'; } });
+      const doTransition = () => {
+        // Fade out backdrop
+        gsap.to(flipBackdrop, { opacity: 0, duration: 0.3, onComplete: () => { flipBackdrop.style.pointerEvents = 'none'; } });
 
-      const state = Flip.getState(card);
-      card.classList.remove('is-expanded');
-      gsap.set(card, { clearProps: 'top,left' });
-      
-      if (card._placeholder) {
-        card._placeholder.style.display = 'none';
-      }
+        const state = Flip.getState(card);
+        card.classList.remove('is-expanded');
+        gsap.set(card, { clearProps: 'top,left' });
 
-      // Return card to its original position in grid
-      Flip.from(state, {
-        duration: 0.55,
-        ease: 'power3.inOut',
-        absolute: true,
-        onComplete: () => {
-          if (card._placeholder) {
-            card._placeholder.remove();
-            card._placeholder = null;
-          }
+        if (card._placeholder) {
+          card._placeholder.style.display = 'none';
         }
-      });
-      
-      if (card._placeholder) {
-        card._placeholder.style.display = 'block';
+
+        // Return card to its original position in grid
+        Flip.from(state, {
+          duration: 0.55,
+          ease: 'power3.inOut',
+          absolute: true,
+          onComplete: () => {
+            if (card._placeholder) {
+              card._placeholder.remove();
+              card._placeholder = null;
+            }
+          }
+        });
+
+        if (card._placeholder) {
+          card._placeholder.style.display = 'block';
+        }
+      };
+
+      if (document.startViewTransition) {
+        document.startViewTransition(doTransition);
+      } else {
+        doTransition();
       }
     }
 
@@ -723,15 +758,15 @@ window.onload = () => {
           const prevState = Flip.getState(expanded);
           expanded.classList.remove('is-expanded');
           gsap.set(expanded, { clearProps: 'top,left' });
-          
+
           if (expanded._placeholder) {
             expanded._placeholder.style.display = 'none';
           }
-          
+
           currentExpandedCard = null;
-          Flip.from(prevState, { 
-            duration: 0.3, 
-            ease: 'power2.in', 
+          Flip.from(prevState, {
+            duration: 0.3,
+            ease: 'power2.in',
             absolute: true,
             onComplete: () => {
               if (expanded._placeholder) {
@@ -740,20 +775,20 @@ window.onload = () => {
               }
             }
           });
-          
+
           if (expanded._placeholder) {
             expanded._placeholder.style.display = 'block';
           }
         }
 
         e.preventDefault();
-        
+
         const doExpand = () => {
           currentExpandedCard = card;
           lastFocusedTrigger = document.activeElement;
 
           const state = Flip.getState(card);
-          
+
           if (!card._placeholder) {
             const placeholder = document.createElement('div');
             placeholder.className = 'profile-placeholder';
@@ -789,7 +824,11 @@ window.onload = () => {
           document.addEventListener('keydown', onExpandedKeydown);
         };
 
-        doExpand();
+        if (document.startViewTransition) {
+          document.startViewTransition(doExpand);
+        } else {
+          doExpand();
+        }
       });
     });
 
@@ -798,12 +837,12 @@ window.onload = () => {
     // ---------------------------------------------------------------
     const revealElements = document.querySelectorAll('.metric-item, .about-content, .about-visual, .initiative-card, .form-container');
     revealElements.forEach((el) => {
-      gsap.fromTo(el, 
+      gsap.fromTo(el,
         { y: 80, opacity: 0 },
-        { 
-          y: 0, 
-          opacity: 1, 
-          duration: 1.4, 
+        {
+          y: 0,
+          opacity: 1,
+          duration: 1.4,
           ease: 'expo.out',
           scrollTrigger: {
             trigger: el,
@@ -832,7 +871,7 @@ window.onload = () => {
     // ---------------------------------------------------------------
     const marqueeContent = document.querySelector('.marquee-content');
     const marqueeContent2 = document.querySelector('.marquee-content-2');
-    
+
     if (marqueeContent) {
       const marqueeTween = gsap.to(marqueeContent, {
         xPercent: -50,
@@ -840,12 +879,12 @@ window.onload = () => {
         duration: 15,
         ease: 'linear'
       });
-      
+
       if (lenis) {
         lenis.on('scroll', (e) => {
           const velocity = Math.abs(e.velocity || 0);
-          gsap.to(marqueeTween, { 
-            timeScale: 1 + Math.min(velocity / 15, 6), 
+          gsap.to(marqueeTween, {
+            timeScale: 1 + Math.min(velocity / 15, 6),
             duration: 0.3,
             ease: 'power2.out'
           });
@@ -904,7 +943,7 @@ window.onload = () => {
         gsap.to('.hamburger span:nth-child(1)', { rotation: 0, y: 0, duration: 0.3, ease: 'power2.out' });
         gsap.to('.hamburger span:nth-child(2)', { opacity: 1, duration: 0.3, ease: 'power2.out' });
         gsap.to('.hamburger span:nth-child(3)', { rotation: 0, y: 0, duration: 0.3, ease: 'power2.out' });
-        
+
         gsap.to(drawer, { xPercent: 100, duration: 0.6, ease: 'power4.inOut' });
         document.body.style.overflow = '';
         if (lenis) lenis.start();
@@ -935,11 +974,11 @@ window.onload = () => {
           gsap.to('.hamburger span:nth-child(1)', { rotation: 45, y: 7, duration: 0.3, ease: 'power2.inOut' });
           gsap.to('.hamburger span:nth-child(2)', { opacity: 0, duration: 0.15, ease: 'power2.in' });
           gsap.to('.hamburger span:nth-child(3)', { rotation: -45, y: -7, duration: 0.3, ease: 'power2.inOut' });
-          
+
           gsap.to(drawer, { xPercent: 0, duration: 0.6, ease: 'power4.inOut' });
           document.body.style.overflow = 'hidden';
           if (lenis) lenis.stop();
-          
+
           document.addEventListener('keydown', onDrawerKeydown);
           const firstLink = drawer.querySelector('a');
           if (firstLink) firstLink.focus();
@@ -959,7 +998,7 @@ window.onload = () => {
     // ---------------------------------------------------------------
     const appForm = document.getElementById('application-form');
     const formSuccess = document.getElementById('form-success');
-    
+
     // Add floating label has-value toggling
     document.querySelectorAll('.input-group input, .input-group textarea').forEach(input => {
       input.addEventListener('input', () => {
@@ -994,8 +1033,8 @@ window.onload = () => {
               if (!f.checkValidity()) {
                 const group = f.closest('.input-group');
                 if (group) group.classList.add('shake');
-                gsap.to(f, { 
-                  x: [-8,8,-6,6,0], 
+                gsap.to(f, {
+                  x: [-8, 8, -6, 6, 0],
                   duration: 0.4,
                   onComplete: () => { if (group) setTimeout(() => group.classList.remove('shake'), 1000); }
                 });
@@ -1043,9 +1082,9 @@ window.onload = () => {
           onComplete: () => {
             appForm.style.display = 'none';
             formSuccess.style.display = 'block';
-            
+
             // Animate success elements
-            gsap.fromTo(formSuccess, 
+            gsap.fromTo(formSuccess,
               { opacity: 0, y: 30 },
               { opacity: 1, y: 0, duration: 0.6, ease: 'power3.out' }
             );
@@ -1065,7 +1104,7 @@ window.onload = () => {
               ease: 'power2.out',
               delay: 0.3
             });
-            
+
             if (sound) sound.success();
           }
         });
@@ -1079,7 +1118,7 @@ window.onload = () => {
       anchor.addEventListener('click', function (e) {
         const href = this.getAttribute('href');
         if (href === '#') return;
-        
+
         const target = document.querySelector(href);
         if (target) {
           e.preventDefault();
@@ -1132,8 +1171,6 @@ window.onload = () => {
     }
 
   } // end initAnimations
-
-}; // end window.onload
 
 // =====================================================================
 // CONFETTI EASTER EGG (§6 — lightweight, no external dependency)
