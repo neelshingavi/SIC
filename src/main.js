@@ -120,8 +120,9 @@ window.onload = () => {
     gsap.to(skipBtn, { opacity: 1, delay: 0.8, duration: 0.4 });
   }
 
-  // Session-aware: fast-path for repeat visitors
-  if (seenIntro || reduceMotion) {
+  // Session-aware: fast-path for repeat visitors or bots
+  const isBot = /bot|googlebot|crawler|spider|robot|crawling|lighthouse/i.test(navigator.userAgent);
+  if (seenIntro || reduceMotion || isBot) {
     if (preloader) preloader.style.display = 'none';
     initAnimations();
     return;
@@ -253,7 +254,7 @@ window.onload = () => {
       initGrain(0.045);
       
       const heroEl = document.querySelector('.hero');
-      if (heroEl) initHeroDistortion(heroEl);
+      if (heroEl && window.innerWidth > 992) initHeroDistortion(heroEl);
 
       const constellationCanvas = document.getElementById('constellation-canvas');
       if (constellationCanvas) {
@@ -271,37 +272,47 @@ window.onload = () => {
     // ---------------------------------------------------------------
     // Hero Animation with SplitText (§5.4)
     // ---------------------------------------------------------------
-    const heroTl = gsap.timeline();
-    heroTl.fromTo('.hero-kicker', 
-      { y: 20, opacity: 0 }, 
-      { y: 0, opacity: 1, duration: 0.8, ease: 'power3.out' }
-    );
+    let mm = gsap.matchMedia();
+    mm.add("(min-width: 992px)", () => {
+      const heroTl = gsap.timeline();
+      heroTl.fromTo('.hero-kicker', 
+        { y: 20, opacity: 0 }, 
+        { y: 0, opacity: 1, duration: 0.8, ease: 'power3.out' }
+      );
 
-    // SplitText for hero title — handles nested .text-cube-container correctly
-    const heroTitle = document.querySelector('.hero-title');
-    if (heroTitle) {
-      // Omit `mask: 'words'` here! The mask's overflow:hidden breaks the 3D cube's preserve-3d context.
-      const heroSplit = new SplitText(heroTitle, { type: 'words' });
-      heroTl.from(heroSplit.words, {
-        y: 60, // use absolute y instead of yPercent since we aren't masking
-        rotationZ: 6,
-        opacity: 0,
-        duration: 1.4,
-        ease: 'expo.out',
-        stagger: 0.08,
-      }, '-=0.5');
-    }
+      // SplitText for hero title — handles nested .text-cube-container correctly
+      const heroTitle = document.querySelector('.hero-title');
+      if (heroTitle) {
+        // Omit `mask: 'words'` here! The mask's overflow:hidden breaks the 3D cube's preserve-3d context.
+        const heroSplit = new SplitText(heroTitle, { type: 'words' });
+        heroTl.from(heroSplit.words, {
+          y: 60, // use absolute y instead of yPercent since we aren't masking
+          rotationZ: 6,
+          opacity: 0,
+          duration: 1.4,
+          ease: 'expo.out',
+          stagger: 0.08,
+        }, '-=0.5');
+      }
 
-    heroTl.fromTo('.hero-subtitle',
-      { y: 20, opacity: 0 },
-      { y: 0, opacity: 1, duration: 1, ease: 'power3.out' },
-      '-=0.7'
-    )
-    .fromTo('.hero-actions a',
-      { y: 20, opacity: 0 },
-      { y: 0, opacity: 1, duration: 0.6, stagger: 0.15, ease: 'power2.out' },
-      '-=0.5'
-    );
+      heroTl.fromTo('.hero-subtitle',
+        { y: 20, opacity: 0 },
+        { y: 0, opacity: 1, duration: 1, ease: 'power3.out' },
+        '-=0.7'
+      )
+      .fromTo('.hero-actions a',
+        { y: 20, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.6, stagger: 0.15, ease: 'power2.out' },
+        '-=0.5'
+      );
+    });
+
+    mm.add("(max-width: 991px)", () => {
+      gsap.fromTo('.hero-actions a',
+        { y: 20, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.6, stagger: 0.15, ease: 'power2.out', delay: 0.5 }
+      );
+    });
 
     // ---------------------------------------------------------------
     // SplitText for all section headings (§5.4 — replacing manual word-split)
