@@ -58,7 +58,7 @@
     <!-- Premium Main Navbar -->
     <nav class="navbar bg-red-textured">
       <div class="container nav-content">
-        <a href="#" class="logo" id="logo-link">
+        <a href="#top" class="logo" id="logo-link">
           <picture>
       <source srcset="/images/logo.avif" type="image/avif">
       <source srcset="/images/logo.webp" type="image/webp">
@@ -432,19 +432,19 @@
               <div class="card-icon"><i data-lucide="rocket"></i></div>
               <h3>Incubation Program</h3>
               <p>A rigorous 12-month program offering workspace, mentorship, and initial seed grants for high-potential tech startups.</p>
-              <a href="#" class="link-arrow magnetic">Learn more <i data-lucide="arrow-right"></i></a>
+              <a href="#apply" class="link-arrow magnetic">Learn more <i data-lucide="arrow-right"></i></a>
             </div>
             <div class="initiative-card">
               <div class="card-icon"><i data-lucide="lightbulb"></i></div>
               <h3>E-Summit PICT</h3>
               <p>Our annual flagship entrepreneurship summit featuring keynote speakers, pitching events, and networking with top VCs.</p>
-              <a href="#" class="link-arrow magnetic">Learn more <i data-lucide="arrow-right"></i></a>
+              <a href="#apply" class="link-arrow magnetic">Learn more <i data-lucide="arrow-right"></i></a>
             </div>
             <div class="initiative-card">
               <div class="card-icon"><i data-lucide="users"></i></div>
               <h3>Mentorship Network</h3>
               <p>1-on-1 guidance from successful alumni founders and industry veterans spanning deep tech, SaaS, and fintech sectors.</p>
-              <a href="#" class="link-arrow magnetic">Learn more <i data-lucide="arrow-right"></i></a>
+              <a href="#ecosystem" class="link-arrow magnetic">Learn more <i data-lucide="arrow-right"></i></a>
             </div>
           </div>
         </div>
@@ -561,10 +561,10 @@
           <div class="footer-links">
             <h4>Institution</h4>
             <ul>
-              <li><a href="#">About PICT</a></li>
-              <li><a href="#">Administration</a></li>
-              <li><a href="#">Academic Programs</a></li>
-              <li><a href="#">Research & Development</a></li>
+              <li><a href="https://pict.edu/" target="_blank">About PICT</a></li>
+              <li><a href="https://pict.edu/administration/" target="_blank">Administration</a></li>
+              <li><a href="https://pict.edu/academic-programs/" target="_blank">Academic Programs</a></li>
+              <li><a href="https://pict.edu/research/" target="_blank">Research & Development</a></li>
             </ul>
           </div>
           <div class="footer-links">
@@ -579,7 +579,7 @@
           <div class="footer-newsletter">
             <h4>Stay Updated</h4>
             <p>Subscribe to our newsletter for updates on events, incubation cohorts, and startup news.</p>
-            <form class="newsletter-form" onsubmit="event.preventDefault();">
+            <form class="newsletter-form" onsubmit="event.preventDefault(); alert('Thank you for subscribing to the SIC PICT newsletter!'); this.reset();">
               <input type="email" placeholder="Your email address" required>
               <button type="submit" class="btn-primary magnetic">Subscribe</button>
             </form>

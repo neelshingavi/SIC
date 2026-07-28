@@ -146,6 +146,14 @@ export function initEcosystem() {
     });
   });
 
+  // Render Lucide icons for dynamically injected nodes
+  createIcons({
+    icons: { Network, Users, Code, Briefcase, Banknote, Star, TrendingUp, Rocket, Layers, Award, Lightbulb, Globe, MapPin },
+    attrs: {
+      'stroke-width': 1.5
+    }
+  });
+
   function highlightConnections(hoveredId) {
     // Highlight lines connected to this node
     Object.keys(lineElements).forEach(key => {

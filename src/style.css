@@ -598,14 +598,14 @@ h1, h2, h3, h4 {
 .nav-links-center {
   display: flex;
   justify-content: center;
-  gap: 2.5rem;
+  gap: 3rem;
 }
 .nav-link {
   font-family: var(--font-sans);
-  font-size: 0.85rem;
+  font-size: 1rem;
   font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 1.5px;
+  letter-spacing: 2px;
   color: #fff;
   position: relative;
   padding: 0.5rem 0;
@@ -1057,6 +1057,7 @@ h1, h2, h3, h4 {
   color: var(--color-text-main);
   flex-shrink: 0;
   padding-bottom: 0;
+  text-align: center;
 }
 .portfolio-scroll-section .section-heading {
   color: var(--color-red);

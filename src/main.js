@@ -460,7 +460,7 @@ window.onload = () => {
 
       // Extended selector: now includes footer links (§5.12)
       // We explicitly list the interactive elements instead of a global 'a' to prevent inline links from becoming magnetic.
-      const magneticElements = document.querySelectorAll('.nav-link, .btn-nav, .navbar-brand, .link-arrow, .btn-primary, .profile-card, .portfolio-item, .footer-links a');
+      const magneticElements = document.querySelectorAll('.nav-link, .btn-nav, .logo, .link-arrow, .btn-primary, .profile-card, .portfolio-item, .footer-links a');
       magneticElements.forEach((el) => {
         el.addEventListener('mouseenter', () => {
           cursorDot.classList.add('hidden');
