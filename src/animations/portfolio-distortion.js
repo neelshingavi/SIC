@@ -119,7 +119,6 @@ export function initPortfolioDistortion(containerEl) {
     let currentMouse = { x: 0.5, y: 0.5 };
     let targetStrength = 0;
     let currentStrength = 0;
-    let isHovering = false;
     let isVisible = false;
 
     // Use IntersectionObserver to pause rendering when offscreen
@@ -129,12 +128,10 @@ export function initPortfolioDistortion(containerEl) {
     io.observe(containerEl);
 
     containerEl.addEventListener('mouseenter', () => {
-      isHovering = true;
       targetStrength = 1.0;
     });
 
     containerEl.addEventListener('mouseleave', () => {
-      isHovering = false;
       targetStrength = 0;
       // Reset mouse to center smoothly
       targetMouse.x = 0.5;

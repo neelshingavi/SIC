@@ -3,24 +3,24 @@
 // Modularized, resilient, and performant subsystem orchestration
 // =====================================================================
 
-import './style.css';
+import '../styles/style.css';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Flip } from 'gsap/Flip';
 import { Observer } from 'gsap/Observer';
 import Lenis from 'lenis';
 import { createIcons, ArrowRight, Rocket, Lightbulb, Users, CheckCircle } from 'lucide';
-import { initGrain } from './grain.js';
-import { initHeroDistortion } from './hero-distortion.js';
-import { initPortfolioDistortion } from './portfolio-distortion.js';
-import { initConstellation } from './constellation.js';
-import { initEcosystem } from './ecosystem.js';
-import { sound } from './sound.js';
+import { initGrain } from '../animations/grain.js';
+import { initHeroDistortion } from '../animations/hero-distortion.js';
+import { initPortfolioDistortion } from '../animations/portfolio-distortion.js';
+import { initConstellation } from '../animations/constellation.js';
+import { initEcosystem } from '../components/ecosystem.js';
+import { sound } from '../services/sound.js';
 
-import { initCursor, destroyCursor } from './cursor.js';
-import { initMetrics, destroyMetrics } from './metrics.js';
-import { initPortfolio, destroyPortfolio } from './portfolio.js';
-import { initNavigation, destroyNavigation } from './navigation.js';
+import { initCursor, destroyCursor } from '../components/cursor.js';
+import { initMetrics, destroyMetrics } from '../services/metrics.js';
+import { initPortfolio, destroyPortfolio } from '../components/portfolio.js';
+import { initNavigation, destroyNavigation } from '../components/navigation.js';
 
 gsap.registerPlugin(ScrollTrigger, Flip, Observer);
 
@@ -37,7 +37,7 @@ function supportsWebGL() {
   try {
     const c = document.createElement('canvas');
     return !!(window.WebGLRenderingContext && (c.getContext('webgl') || c.getContext('experimental-webgl')));
-  } catch (e) { return false; }
+  } catch { return false; }
 }
 
 createIcons({ icons: { ArrowRight, Rocket, Lightbulb, Users, CheckCircle } });

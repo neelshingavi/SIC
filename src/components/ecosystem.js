@@ -1,5 +1,5 @@
 import gsap from 'gsap';
-import { sound } from './sound.js';
+import { sound } from '../services/sound.js';
 import { createIcons, Network, Users, Code, Briefcase, Banknote, Star, TrendingUp, Rocket, Layers, Award, Lightbulb, Globe, MapPin } from 'lucide';
 
 export function initEcosystem() {
