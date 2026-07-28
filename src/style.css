@@ -1248,7 +1248,7 @@ h1, h2, h3, h4 {
 
 /* Flip-powered bio expansion (§5.9) */
 .profile-card.is-expanded {
-  position: fixed !important; /* Flip uses absolute:true then GSAP sets transforms */
+  position: fixed;
   z-index: 2000;
   background: #3d070a;
   background-image: image-set(

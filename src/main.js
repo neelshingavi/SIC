@@ -678,40 +678,32 @@ window.onload = () => {
 
       collapseCardA11y();
 
-      const doTransition = () => {
-        // Fade out backdrop
-        gsap.to(flipBackdrop, { opacity: 0, duration: 0.3, onComplete: () => { flipBackdrop.style.pointerEvents = 'none'; } });
+      // Fade out backdrop
+      gsap.to(flipBackdrop, { opacity: 0, duration: 0.3, onComplete: () => { flipBackdrop.style.pointerEvents = 'none'; } });
 
-        const state = Flip.getState(card);
-        card.classList.remove('is-expanded');
-        gsap.set(card, { clearProps: 'top,left' });
-        
-        if (card._placeholder) {
-          card._placeholder.style.display = 'none';
-        }
+      const state = Flip.getState(card);
+      card.classList.remove('is-expanded');
+      gsap.set(card, { clearProps: 'top,left' });
+      
+      if (card._placeholder) {
+        card._placeholder.style.display = 'none';
+      }
 
-        // Return card to its original position in grid
-        Flip.from(state, {
-          duration: 0.55,
-          ease: 'power3.inOut',
-          absolute: true,
-          onComplete: () => {
-            if (card._placeholder) {
-              card._placeholder.remove();
-              card._placeholder = null;
-            }
+      // Return card to its original position in grid
+      Flip.from(state, {
+        duration: 0.55,
+        ease: 'power3.inOut',
+        absolute: true,
+        onComplete: () => {
+          if (card._placeholder) {
+            card._placeholder.remove();
+            card._placeholder = null;
           }
-        });
-        
-        if (card._placeholder) {
-          card._placeholder.style.display = 'block';
         }
-      };
-
-      if (document.startViewTransition) {
-        document.startViewTransition(doTransition);
-      } else {
-        doTransition();
+      });
+      
+      if (card._placeholder) {
+        card._placeholder.style.display = 'block';
       }
     }
 
@@ -797,11 +789,7 @@ window.onload = () => {
           document.addEventListener('keydown', onExpandedKeydown);
         };
 
-        if (document.startViewTransition) {
-          document.startViewTransition(doExpand);
-        } else {
-          doExpand();
-        }
+        doExpand();
       });
     });
 
