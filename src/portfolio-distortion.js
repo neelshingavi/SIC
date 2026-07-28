@@ -23,8 +23,10 @@ const fragment = /* glsl */ `
   varying vec2 vUv;
 
   void main() {
-    vec2 uv = vUv;
-    
+    // Aspect-correct mouse distance in SCREEN space (using vUv)
+    vec2 aspect = vec2(uResolution.x / uResolution.y, 1.0);
+    float dist = distance(vUv * aspect, uMouse * aspect);
+
     // Object-fit: cover mapping
     vec2 s = uResolution;
     vec2 i = uImageResolution;
@@ -32,23 +34,21 @@ const fragment = /* glsl */ `
     float ri = i.x / i.y;
     vec2 newSize = rs < ri ? vec2(i.x * s.y / i.y, s.y) : vec2(s.x, i.y * s.x / i.x);
     vec2 offset = (rs < ri ? vec2((newSize.x - s.x) / 2.0, 0.0) : vec2(0.0, (newSize.y - s.y) / 2.0)) / newSize;
-    uv = uv * s / newSize + offset;
-
     
-    // Aspect-correct mouse distance
-    vec2 aspect = vec2(uResolution.x / uResolution.y, 1.0);
-    float dist = distance(uv * aspect, uMouse * aspect);
+    // Base texture coords modified by object-fit
+    vec2 baseUv = vUv * s / newSize + offset;
+
+    // Original distortion logic, but using vUv for distance/direction
     float falloff = smoothstep(0.4, 0.0, dist);
-    vec2 dir = normalize(uv - uMouse + 0.0001);
+    vec2 dir = normalize(vUv - uMouse + 0.0001);
 
-    // subtle idle wave
-    float idleWave = sin(uv.x * 4.0 + uTime * 0.5) * sin(uv.y * 3.0 + uTime * 0.4) * 0.003;
+    // subtle idle wave using screen space
+    float idleWave = sin(vUv.x * 4.0 + uTime * 0.5) * sin(vUv.y * 3.0 + uTime * 0.4) * 0.003;
     
-    uv += dir * falloff * uStrength * 0.08;
-    uv.y += idleWave;
+    vec2 distortedUv = baseUv + (dir * falloff * uStrength * 0.08);
+    distortedUv.y += idleWave;
 
-    uv = clamp(uv, 0.0, 1.0);
-    gl_FragColor = texture2D(tMap, uv);
+    gl_FragColor = texture2D(tMap, clamp(distortedUv, 0.0, 1.0));
   }
 `;
 
@@ -84,20 +84,6 @@ export function initPortfolioDistortion(containerEl) {
 
     const texture = new Texture(gl, { generateMipmaps: false });
     
-    // Handle image load
-    const onLoad = () => {
-      texture.image = imgEl;
-      if (typeof program !== "undefined") { program.uniforms.uImageResolution.value = [imgEl.naturalWidth, imgEl.naturalHeight]; } else { setTimeout(() => program.uniforms.uImageResolution.value = [imgEl.naturalWidth, imgEl.naturalHeight], 50); }
-      gl.canvas.style.opacity = '1';
-      imgEl.style.opacity = '0'; // Hide underlying image gracefully
-    };
-    
-    if (imgEl.complete && imgEl.naturalWidth !== 0) {
-      onLoad();
-    } else {
-      imgEl.addEventListener('load', onLoad);
-    }
-
     const geometry = new Triangle(gl);
     const program = new Program(gl, {
       vertex,
@@ -113,6 +99,20 @@ export function initPortfolioDistortion(containerEl) {
     });
     
     const mesh = new Mesh(gl, { geometry, program });
+
+    // Handle image load
+    const onLoad = () => {
+      texture.image = imgEl;
+      program.uniforms.uImageResolution.value = [imgEl.naturalWidth, imgEl.naturalHeight];
+      gl.canvas.style.opacity = '1';
+      imgEl.style.opacity = '0'; // Hide underlying image gracefully
+    };
+    
+    if (imgEl.complete && imgEl.naturalWidth !== 0) {
+      onLoad();
+    } else {
+      imgEl.addEventListener('load', onLoad);
+    }
 
     // Interaction state
     let targetMouse = { x: 0.5, y: 0.5 };
