@@ -19,10 +19,21 @@ const fragment = /* glsl */ `
   uniform float uStrength;
   uniform float uTime;
   uniform vec2 uResolution;
+  uniform vec2 uImageResolution;
   varying vec2 vUv;
 
   void main() {
     vec2 uv = vUv;
+    
+    // Object-fit: cover mapping
+    vec2 s = uResolution;
+    vec2 i = uImageResolution;
+    float rs = s.x / s.y;
+    float ri = i.x / i.y;
+    vec2 newSize = rs < ri ? vec2(i.x * s.y / i.y, s.y) : vec2(s.x, i.y * s.x / i.x);
+    vec2 offset = (rs < ri ? vec2((newSize.x - s.x) / 2.0, 0.0) : vec2(0.0, (newSize.y - s.y) / 2.0)) / newSize;
+    uv = uv * s / newSize + offset;
+
     
     // Aspect-correct mouse distance
     vec2 aspect = vec2(uResolution.x / uResolution.y, 1.0);
@@ -76,6 +87,7 @@ export function initPortfolioDistortion(containerEl) {
     // Handle image load
     const onLoad = () => {
       texture.image = imgEl;
+      program.uniforms.uImageResolution.value = [imgEl.naturalWidth, imgEl.naturalHeight];
       gl.canvas.style.opacity = '1';
       imgEl.style.opacity = '0'; // Hide underlying image gracefully
     };
@@ -95,7 +107,8 @@ export function initPortfolioDistortion(containerEl) {
         uMouse: { value: [0.5, 0.5] },
         uStrength: { value: 0 },
         uTime: { value: 0 },
-        uResolution: { value: [containerEl.clientWidth, containerEl.clientHeight] }
+        uResolution: { value: [containerEl.clientWidth, containerEl.clientHeight] },
+        uImageResolution: { value: [1, 1] }
       },
     });
     
