@@ -223,14 +223,12 @@ export function initEcosystem() {
       let targetX = x + 20;
       let targetY = y - 20;
 
+      // Smart clamping to ensure tooltip never gets cut off by overflow:hidden
       if (targetX + infoCard.offsetWidth > rect.width) {
         targetX = x - infoCard.offsetWidth - 20;
       }
-      if (targetY + infoCard.offsetHeight > rect.height) {
-        targetY = rect.height - infoCard.offsetHeight - 20;
-      } else if (targetY < 0) {
-        targetY = 20;
-      }
+      targetX = Math.max(10, Math.min(targetX, rect.width - infoCard.offsetWidth - 10));
+      targetY = Math.max(10, Math.min(targetY, rect.height - infoCard.offsetHeight - 10));
 
       gsap.to(infoCard, {
         x: targetX,
