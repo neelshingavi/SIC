@@ -1509,26 +1509,47 @@ h1, h2, h3, h4 {
 }
 
 @media (max-width: 768px) {
+  .container {
+    padding: 0 1.25rem;
+  }
+  
   .bg-red-textured {
     background-size: 400px;
     background-repeat: repeat;
   }
   
-  .section-padding { padding: 4rem 0; }
+  .section-padding { padding: 3rem 0; }
   
   /* Native swipeable portfolio on mobile — no scroll-jacking */
   .portfolio-scroll-section {
     height: auto;
   }
+  .portfolio-horizontal-wrapper {
+    padding: 0;
+  }
+  .portfolio-track {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding-bottom: 2rem;
+  }
+  .portfolio-track::-webkit-scrollbar {
+    display: none;
+  }
   .portfolio-item {
+    flex: 0 0 85vw;
     width: 85vw;
-    height: 70vh;
+    height: 60vh;
     margin-right: 5vw;
+    margin-left: 5vw;
     scroll-snap-align: center;
   }
-  .portfolio-horizontal-wrapper {
-    padding-left: 5vw;
-    padding-right: 5vw;
+  
+  /* Ecosystem Graph Scaling */
+  .ecosystem-container {
+    height: 500px;
   }
   
   .profile-info h4 {
@@ -1553,6 +1574,8 @@ h1, h2, h3, h4 {
   .hero-title { font-size: 2.2rem; }
   .hero-actions { flex-direction: column; }
   .hero-actions a { text-align: center; }
+  .hero-stats { margin-top: 2rem; }
+  .ecosystem-container { height: 400px; }
 }
 
 /* ========================================
