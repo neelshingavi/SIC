@@ -25,7 +25,9 @@ const fragmentShader = /* glsl */ `
   void main() {
     vec2 uv = gl_FragCoord.xy / uResolution.xy;
     float grain = random(uv * uResolution.xy + uTime * 60.0);
-    gl_FragColor = vec4(vec3(grain), grain * uOpacity);
+    float alpha = grain * uOpacity;
+    // Premultiply RGB by alpha to prevent Safari rendering artifacts
+    gl_FragColor = vec4(vec3(grain * alpha), alpha);
   }
 `;
 
