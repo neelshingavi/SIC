@@ -178,24 +178,6 @@ body {
   /* hidden off-screen to the right initially */
 }
 
-.expanded-linkedin-link {
-  display: none;
-  margin-top: 1rem;
-  font-weight: 500;
-  color: var(--color-gold);
-  text-decoration: none;
-  border-bottom: 1px solid transparent;
-  transition: border-color 0.3s;
-}
-
-.profile-card.is-expanded .expanded-linkedin-link {
-  display: inline-block;
-}
-
-.expanded-linkedin-link:hover {
-  border-bottom-color: var(--color-gold);
-}
-
 /* Form Wizard */
 .wizard-progress {
   width: 100%;
@@ -1368,7 +1350,7 @@ h4 {
 }
 
 /* ========================================
-   LEADERSHIP
+   LEADERSHIP — Cinematic Glass Portrait
    ======================================== */
 .grid-4-col {
   display: grid;
@@ -1377,22 +1359,37 @@ h4 {
   margin-top: 3rem;
 }
 
-.grid-5-col {
+.leadership-grid {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
-  gap: 1rem;
+  gap: 1.25rem;
   align-items: start;
   margin-top: 3rem;
 }
 
+/* ── Portrait Card ── */
 .profile-card {
-  display: block;
-  text-align: center;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  border-radius: 20px;
+  overflow: hidden;
+  background: #1a080c;
+  border: 1px solid rgba(212, 175, 55, 0.15);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  aspect-ratio: 3 / 4;
   cursor: pointer;
+  transition: border-color 0.35s ease-out, box-shadow 0.35s ease-out, transform 0.35s ease-out;
+  will-change: transform;
 }
 
-/* Removed scale to prevent AOS conflict */
+/* ── Full-bleed image ── */
+.profile-img-wrapper {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
 .profile-img-wrapper picture {
   display: block;
   width: 100%;
@@ -1400,81 +1397,125 @@ h4 {
 }
 
 .profile-card img {
-  width: 280px;
-  max-width: 100%;
-  aspect-ratio: 1 / 1;
+  display: block;
+  width: 100%;
+  height: 100%;
   object-fit: cover;
-  border-radius: 50%;
-  margin: 0 auto 0.5rem;
-  border: 4px solid var(--color-gold);
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  object-position: top center;
+  filter: grayscale(25%) brightness(0.88);
+  transition: transform 0.4s ease-out, filter 0.4s ease-out;
+  will-change: transform, filter;
+  border-radius: 0;
 }
 
-.profile-card:hover img {
-  transform: scale(1.05);
-  box-shadow: 0 15px 30px rgba(210, 168, 85, 0.4);
-  border-color: #fff;
+/* ── Bottom gradient overlay ── */
+.profile-card-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.92) 0%,
+    rgba(0, 0, 0, 0.55) 38%,
+    rgba(0, 0, 0, 0.12) 62%,
+    transparent 100%
+  );
+  pointer-events: none;
+}
+
+/* ── Card content (pinned to bottom) ── */
+.profile-info {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 1rem 1rem 0.85rem;
+  z-index: 2;
 }
 
 .profile-info h4 {
   font-family: var(--font-sans);
   color: #fff;
-  margin-top: 0;
-  margin-bottom: 0.2rem;
-  font-size: 1.8rem;
-  font-weight: 600;
-  transition: color 0.3s ease;
-}
-
-.profile-card:hover .profile-info h4 {
-  color: var(--color-gold);
+  margin: 0 0 0.2rem;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  line-height: 1.25;
+  text-shadow: 0 1px 6px rgba(0,0,0,0.6);
 }
 
 .profile-info p {
-  color: var(--color-text-muted);
-  font-size: 1.3rem;
-  margin: 0;
-  transition: color 0.3s ease;
+  color: var(--color-gold-light);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin: 0 0 0.65rem;
+  line-height: 1.3;
 }
 
-.profile-card:hover .profile-info p {
-  color: #fff;
+/* ── Action buttons — revealed on hover ── */
+.profile-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  transform: translateY(6px);
+  opacity: 0;
+  transition: opacity 0.3s ease-out, transform 0.3s ease-out;
 }
 
-/* Flip-powered bio expansion (§5.9) */
-.profile-card.is-expanded {
-  position: fixed !important;
-  /* Flip uses absolute:true then GSAP sets transforms */
-  z-index: 2000;
-  background: #3d070a;
-  background-image: image-set(url('/images/red-texture.avif') type('image/avif'),
-      url('/images/red-texture.webp') type('image/webp'),
-      url('/images/red-texture.jpg') type('image/jpeg'));
-  background-size: cover;
-  padding: 3rem;
-  border-radius: 16px;
-  max-width: 400px;
-  width: 90vw;
-  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6);
-  cursor: pointer;
+.profile-action-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 7px;
+  text-decoration: none;
+  transition: transform 0.2s ease-out, background-color 0.2s ease-out;
 }
 
-.profile-card.is-expanded img {
-  width: 200px;
-  border-width: 5px;
-  margin-bottom: 1.5rem;
+.profile-action-btn:hover,
+.profile-action-btn:focus-visible {
+  transform: scale(1.12);
 }
 
-.profile-card.is-expanded .profile-info h4 {
-  font-size: 2rem;
-  color: var(--color-gold);
-  margin-bottom: 0.5rem;
+.profile-action-btn--linkedin {
+  background: rgba(10, 102, 194, 0.22);
+  color: #5ba4f5;
+  border: 1px solid rgba(10, 102, 194, 0.3);
 }
 
-.profile-card.is-expanded .profile-info p {
-  color: rgba(255, 255, 255, 0.8);
-  font-size: 1.1rem;
+.profile-action-btn--mail {
+  background: rgba(212, 175, 55, 0.18);
+  color: var(--color-gold-light);
+  border: 1px solid rgba(212, 175, 55, 0.28);
+}
+
+.profile-action-btn svg {
+  width: 13px;
+  height: 13px;
+}
+
+/* ── Hover physics ── */
+@media (hover: hover) and (pointer: fine) {
+  .profile-card:hover {
+    border-color: rgba(212, 175, 55, 0.6);
+    box-shadow:
+      0 0 0 1px rgba(212, 175, 55, 0.15),
+      0 12px 40px -8px rgba(212, 175, 55, 0.22),
+      0 20px 50px -12px rgba(0, 0, 0, 0.55);
+    transform: translateY(-5px) scale(1.015);
+  }
+
+  .profile-card:hover img {
+    transform: scale(1.06);
+    filter: grayscale(0%) brightness(0.95);
+  }
+
+  .profile-card:hover .profile-actions {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* ========================================
@@ -1758,9 +1799,17 @@ h4 {
   }
 }
 
+@media (max-width: 1400px) {
+  .leadership-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.1rem;
+  }
+}
+
 @media (max-width: 1200px) {
-  .grid-5-col {
+  .leadership-grid {
     grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
   }
 }
 
@@ -1777,8 +1826,9 @@ h4 {
   }
 
   .grid-4-col,
-  .grid-5-col {
+  .leadership-grid {
     grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
   }
 
   .form-row {
@@ -1822,6 +1872,19 @@ h4 {
 
   .section-padding {
     padding: 3rem 0;
+  }
+
+  .leadership-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.85rem;
+  }
+
+  .profile-info h4 {
+    font-size: 0.9rem;
+  }
+
+  .profile-info p {
+    font-size: 0.66rem;
   }
 
   /* Native swipeable portfolio on mobile — no scroll-jacking */
@@ -1899,11 +1962,11 @@ h4 {
   }
 
   .profile-info h4 {
-    font-size: 1.4rem;
+    font-size: 0.95rem;
   }
 
   .profile-info p {
-    font-size: 1.1rem;
+    font-size: 0.7rem;
   }
 
   .form-container {
@@ -1919,24 +1982,6 @@ h4 {
 @media (max-width: 576px) {
   .grid-4-col {
     grid-template-columns: 1fr;
-  }
-
-  .grid-5-col {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 2rem 1rem;
-  }
-
-  .grid-5-col .profile-info h4 {
-    font-size: 1.1rem;
-    margin-bottom: 0.1rem;
-  }
-
-  .grid-5-col .profile-info p {
-    font-size: 0.85rem;
-  }
-
-  .grid-5-col .expanded-linkedin-link {
-    font-size: 0.8rem;
   }
 
   .hero-title {
