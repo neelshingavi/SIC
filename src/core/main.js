@@ -21,6 +21,7 @@ import { initCursor, destroyCursor } from '../components/cursor.js';
 import { initMetrics, destroyMetrics } from '../services/metrics.js';
 import { initPortfolio, destroyPortfolio } from '../components/portfolio.js';
 import { initNavigation, destroyNavigation } from '../components/navigation.js';
+import { initLeadership } from '../components/leadership.js';
 
 gsap.registerPlugin(ScrollTrigger, Flip, Observer);
 
@@ -338,7 +339,7 @@ function initAnimations() {
   initCursor(reduceMotion);
   initNavigation(lenis, reduceMotion);
   initParallax();
-  initLeadership();
+  initLeadership(reduceMotion);
   initForm();
   initEasterEggsAndSounds();
   initScrollReveals();
@@ -536,181 +537,6 @@ function initParallax() {
     card.addEventListener('mouseleave', () => {
       rotX(0);
       rotY(0);
-    });
-  });
-}
-
-function initLeadership() {
-  const profileCards = document.querySelectorAll('.profile-card');
-  if (!profileCards.length) return;
-
-  if (!reduceMotion) {
-    gsap.fromTo('.profile-card',
-      { y: 60, opacity: 0, scale: 0.9 },
-      {
-        y: 0,
-        opacity: 1,
-        scale: 1,
-        duration: 1,
-        ease: 'expo.out',
-        stagger: 0.08,
-        scrollTrigger: {
-          trigger: '.grid-5-col',
-          start: 'top 85%',
-        },
-      }
-    );
-  } else {
-    gsap.set('.profile-card', { opacity: 1, y: 0, scale: 1 });
-  }
-
-  const flipBackdrop = document.createElement('div');
-  flipBackdrop.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:1999;opacity:0;pointer-events:none;backdrop-filter:blur(4px);';
-  document.body.appendChild(flipBackdrop);
-
-  let currentExpandedCard = null;
-  let lastFocusedTrigger = null;
-
-  function collapseCardA11y() {
-    document.removeEventListener('keydown', onExpandedKeydown);
-    if (currentExpandedCard) {
-      currentExpandedCard.removeAttribute('role');
-      currentExpandedCard.removeAttribute('aria-modal');
-      currentExpandedCard.removeAttribute('tabindex');
-    }
-    if (lastFocusedTrigger) {
-      lastFocusedTrigger.focus();
-      lastFocusedTrigger = null;
-    }
-  }
-
-  function onExpandedKeydown(e) {
-    if (e.key === 'Escape') collapseCard();
-    if (e.key === 'Tab' && currentExpandedCard) {
-      const focusables = currentExpandedCard.querySelectorAll('a, button, [tabindex]');
-      const list = Array.from(focusables);
-      if (!list.length) return;
-      const first = list[0], last = list[list.length - 1];
-      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
-      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
-    }
-  }
-
-  function collapseCard() {
-    if (!currentExpandedCard) return;
-    const card = currentExpandedCard;
-    currentExpandedCard = null;
-
-    collapseCardA11y();
-
-    const doTransition = () => {
-      gsap.to(flipBackdrop, { opacity: 0, duration: 0.3, onComplete: () => { flipBackdrop.style.pointerEvents = 'none'; } });
-      const state = Flip.getState(card);
-      card.classList.remove('is-expanded');
-      gsap.set(card, { clearProps: 'top,left' });
-
-      if (card._placeholder) card._placeholder.style.display = 'none';
-
-      Flip.from(state, {
-        duration: reduceMotion ? 0 : 0.55,
-        ease: 'power3.inOut',
-        absolute: true,
-        onComplete: () => {
-          if (card._placeholder) {
-            card._placeholder.remove();
-            card._placeholder = null;
-          }
-        }
-      });
-
-      if (card._placeholder) card._placeholder.style.display = 'block';
-    };
-
-    if (document.startViewTransition && !reduceMotion) {
-      document.startViewTransition(doTransition);
-    } else {
-      doTransition();
-    }
-  }
-
-  flipBackdrop.addEventListener('click', collapseCard);
-
-  profileCards.forEach(card => {
-    card.addEventListener('click', (e) => {
-      if (card === currentExpandedCard) {
-        e.preventDefault();
-        collapseCard();
-        return;
-      }
-
-      const expanded = document.querySelector('.profile-card.is-expanded');
-      if (expanded && expanded !== card) {
-        const prevState = Flip.getState(expanded);
-        expanded.classList.remove('is-expanded');
-        gsap.set(expanded, { clearProps: 'top,left' });
-
-        if (expanded._placeholder) expanded._placeholder.style.display = 'none';
-
-        currentExpandedCard = null;
-        Flip.from(prevState, {
-          duration: reduceMotion ? 0 : 0.3,
-          ease: 'power2.in',
-          absolute: true,
-          onComplete: () => {
-            if (expanded._placeholder) {
-              expanded._placeholder.remove();
-              expanded._placeholder = null;
-            }
-          }
-        });
-
-        if (expanded._placeholder) expanded._placeholder.style.display = 'block';
-      }
-
-      e.preventDefault();
-
-      const doExpand = () => {
-        currentExpandedCard = card;
-        lastFocusedTrigger = document.activeElement;
-        const state = Flip.getState(card);
-
-        if (!card._placeholder) {
-          const placeholder = document.createElement('div');
-          placeholder.className = 'profile-placeholder';
-          const rect = card.getBoundingClientRect();
-          placeholder.style.width = rect.width + 'px';
-          placeholder.style.height = rect.height + 'px';
-          card.parentNode.insertBefore(placeholder, card);
-          card._placeholder = placeholder;
-        }
-
-        card.classList.add('is-expanded');
-        card.setAttribute('role', 'dialog');
-        card.setAttribute('aria-modal', 'true');
-        card.setAttribute('aria-label', card.querySelector('h4')?.textContent || 'Profile details');
-        card.setAttribute('tabindex', '-1');
-
-        const vw = window.innerWidth;
-        const vh = window.innerHeight;
-        const cardW = Math.min(400, vw * 0.9);
-        gsap.set(card, {
-          top: (vh - card.offsetHeight) / 2,
-          left: (vw - cardW) / 2,
-        });
-
-        Flip.from(state, { duration: reduceMotion ? 0 : 0.65, ease: 'power3.inOut', absolute: true });
-        flipBackdrop.style.pointerEvents = 'auto';
-        gsap.to(flipBackdrop, { opacity: 1, duration: 0.35 });
-
-        card.focus();
-        document.addEventListener('keydown', onExpandedKeydown);
-      };
-
-      if (document.startViewTransition && !reduceMotion) {
-        document.startViewTransition(doExpand);
-      } else {
-        doExpand();
-      }
     });
   });
 }
