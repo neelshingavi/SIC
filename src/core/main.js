@@ -47,21 +47,58 @@ createIcons({ icons: { ArrowRight, Rocket, Lightbulb, Users, CheckCircle } });
 // =====================================================================
 function splitTextNodes(element) {
   if (!element) return { words: [], revert: () => {} };
-  const words = element.textContent.trim().split(/\s+/);
-  element.innerHTML = '';
+  
+  const originalHTML = element.innerHTML;
   const wordElements = [];
-  words.forEach((word, index) => {
-    const span = document.createElement('span');
-    span.style.display = 'inline-block';
-    span.textContent = word + (index < words.length - 1 ? '\u00A0' : '');
-    element.appendChild(span);
-    wordElements.push(span);
+  
+  function processNode(node) {
+    if (node.nodeType === Node.TEXT_NODE) {
+      const text = node.textContent;
+      const words = text.split(/(\s+)/);
+      const frag = document.createDocumentFragment();
+      words.forEach(word => {
+        if (word.trim() === '') {
+          frag.appendChild(document.createTextNode(word));
+        } else {
+          const span = document.createElement('span');
+          span.style.display = 'inline-block';
+          span.textContent = word;
+          frag.appendChild(span);
+          wordElements.push(span);
+        }
+      });
+      return frag;
+    } else if (node.nodeType === Node.ELEMENT_NODE) {
+      if (node.classList.contains('text-cube-container')) {
+        const clone = node.cloneNode(true);
+        clone.style.display = 'inline-block';
+        wordElements.push(clone);
+        return clone;
+      } else if (node.nodeName === 'BR') {
+        return node.cloneNode(false);
+      } else {
+        const clone = node.cloneNode(false);
+        Array.from(node.childNodes).forEach(child => {
+          clone.appendChild(processNode(child));
+        });
+        return clone;
+      }
+    }
+    return document.createTextNode('');
+  }
+
+  const newFrag = document.createDocumentFragment();
+  Array.from(element.childNodes).forEach(child => {
+    newFrag.appendChild(processNode(child));
   });
+  
+  element.innerHTML = '';
+  element.appendChild(newFrag);
+
   return {
     words: wordElements,
     revert: () => {
-      element.innerHTML = '';
-      element.textContent = words.join(' ');
+      element.innerHTML = originalHTML;
     }
   };
 }
