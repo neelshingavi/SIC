@@ -1824,6 +1824,7 @@ h4 {
   .portfolio-grid,
   .footer-grid {
     grid-template-columns: 1fr;
+    gap: 2rem;
   }
 
   .grid-4-col,
@@ -1864,6 +1865,59 @@ h4 {
 
   .lead-text {
     font-size: 1.1rem;
+  }
+
+  .logo-img {
+    height: 40px;
+    width: 40px;
+  }
+  
+  .logo-text {
+    font-size: 1.25rem;
+  }
+  
+  .nav-content {
+    padding: 0.5rem 0;
+  }
+  
+  .hero-title {
+    font-size: 2.5rem;
+  }
+  
+  .hero-kicker {
+    font-size: 0.85rem;
+    margin-bottom: 0.8rem;
+  }
+  
+  .hero-subtitle {
+    font-size: 1rem;
+    margin-bottom: 2rem;
+  }
+
+  .metric-number {
+    font-size: 2.2rem;
+  }
+  
+  .metric-label {
+    font-size: 0.9rem;
+  }
+
+  .initiative-card {
+    padding: 1.5rem 1.25rem;
+  }
+  
+  .inst-footer {
+    padding: 3rem 0 1rem;
+  }
+  
+  .footer-grid {
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+  }
+  
+  .footer-links h4,
+  .footer-newsletter h4 {
+    margin-bottom: 1rem;
   }
 
   .bg-red-textured {
@@ -1913,7 +1967,7 @@ h4 {
   .portfolio-item {
     flex: 0 0 85vw;
     width: 85vw;
-    height: 450px;
+    height: 380px;
     margin-right: 5vw;
     margin-left: 5vw;
     scroll-snap-align: center;
@@ -1924,17 +1978,16 @@ h4 {
   }
 
   .portfolio-info h3 {
-    font-size: 1.8rem;
+    font-size: 1.5rem;
     margin-bottom: 0.5rem;
   }
 
   .portfolio-info p {
-    font-size: 0.95rem;
+    font-size: 0.85rem;
   }
 
-  /* Ecosystem Graph Scaling - Target inner .eco-node to preserve centering */
   .ecosystem-container {
-    height: 500px;
+    height: 400px;
   }
 
   .eco-node-center .eco-node {
@@ -1971,7 +2024,7 @@ h4 {
   }
 
   .form-container {
-    padding: 2rem;
+    padding: 1.5rem;
   }
 
   .skip-intro {
