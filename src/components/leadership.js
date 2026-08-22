@@ -76,11 +76,14 @@ export function initLeadership(reduceMotion = false) {
 
   grid.innerHTML = LEADERSHIP_TEAM.map(renderCard).join('');
 
+  // Render Lucide mail icons only within the newly injected grid
+  // (avoids re-processing existing page icons)
   createIcons({
     icons: { Mail },
     attrs: {
       'stroke-width': 2,
     },
+    nameAttr: 'data-lucide',
   });
 
   const cards = grid.querySelectorAll('.profile-card');

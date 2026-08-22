@@ -240,20 +240,33 @@ export function initEcosystem() {
     }
   });
 
-  // Reveal Animation on Scroll
-  gsap.fromTo(svg.querySelectorAll('.eco-line'),
-    { drawSVG: "0%" },
-    {
-      drawSVG: "100%",
-      duration: 1.5,
-      stagger: 0.1,
-      ease: "power2.inOut",
-      scrollTrigger: {
-        trigger: container,
-        start: "top 75%",
-      }
+  // Reveal Animation on Scroll — vanilla strokeDashoffset (no DrawSVGPlugin needed)
+  const ecoLines = svg.querySelectorAll('.eco-line');
+  ecoLines.forEach(line => {
+    // SVG <line> elements don't have getTotalLength, so compute length manually
+    const x1 = parseFloat(line.getAttribute('x1'));
+    const y1 = parseFloat(line.getAttribute('y1'));
+    const x2 = parseFloat(line.getAttribute('x2'));
+    const y2 = parseFloat(line.getAttribute('y2'));
+    // Use container dimensions to resolve percentage values
+    const rect = container.getBoundingClientRect();
+    const dx = (x2 - x1) * rect.width / 100;
+    const dy = (y2 - y1) * rect.height / 100;
+    const length = Math.sqrt(dx * dx + dy * dy);
+    line.style.strokeDasharray = length;
+    line.style.strokeDashoffset = length;
+  });
+
+  gsap.to(ecoLines, {
+    strokeDashoffset: 0,
+    duration: 1.5,
+    stagger: 0.1,
+    ease: 'power2.inOut',
+    scrollTrigger: {
+      trigger: container,
+      start: 'top 75%',
     }
-  );
+  });
 
   gsap.fromTo('.eco-node-wrapper',
     { scale: 0, opacity: 0 },
@@ -270,8 +283,4 @@ export function initEcosystem() {
     }
   );
 
-  // Initialize lucide icons for new nodes
-  createIcons({
-    icons: { Network, Users, Code, Briefcase, Banknote, Star, TrendingUp, Rocket, Layers, Award, Lightbulb, Globe, MapPin }
-  });
 }

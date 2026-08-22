@@ -6,7 +6,6 @@
 import '../styles/style.css';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { Flip } from 'gsap/Flip';
 import { Observer } from 'gsap/Observer';
 import Lenis from 'lenis';
 import { createIcons, ArrowRight, Rocket, Lightbulb, Users, CheckCircle } from 'lucide';
@@ -21,9 +20,9 @@ import { initCursor, destroyCursor } from '../components/cursor.js';
 import { initMetrics, destroyMetrics } from '../services/metrics.js';
 import { initPortfolio, destroyPortfolio } from '../components/portfolio.js';
 import { initNavigation, destroyNavigation } from '../components/navigation.js';
-import { initLeadership } from '../components/leadership.js';
+import { initLeadership, destroyLeadership } from '../components/leadership.js';
 
-gsap.registerPlugin(ScrollTrigger, Flip, Observer);
+gsap.registerPlugin(ScrollTrigger, Observer);
 
 // =====================================================================
 // GLOBAL ACCESSIBILITY & MOTION
@@ -556,12 +555,16 @@ function initForm() {
   const steps = Array.from(document.querySelectorAll('.form-step'));
   let currentStep = 0;
 
+  // Fix #16: Show step 1 as active in progress bar
+  gsap.set('.wizard-progress-fill', { scaleX: 1 / steps.length });
+
   function goToStep(index) {
-    const state = Flip.getState(steps[currentStep]);
     steps[currentStep].style.display = 'none';
     steps[index].style.display = 'block';
     currentStep = index;
-    Flip.from(state, { duration: reduceMotion ? 0 : 0.5, ease: 'power2.inOut' });
+    if (!reduceMotion) {
+      gsap.fromTo(steps[index], { opacity: 0, y: 15 }, { opacity: 1, y: 0, duration: 0.4, ease: 'power2.out' });
+    }
     gsap.to('.wizard-progress-fill', { scaleX: (index + 1) / steps.length, duration: reduceMotion ? 0 : 0.4, ease: 'power2.out' });
   }
 
@@ -653,6 +656,12 @@ function initEasterEggsAndSounds() {
     let clickCount = 0;
     logoLink.addEventListener('click', (e) => {
       e.preventDefault();
+      // Scroll to top
+      if (lenis) {
+        lenis.scrollTo(0, { duration: 1.5 });
+      } else {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
       clickCount++;
       if (clickCount >= 5) {
         clickCount = 0;
@@ -790,24 +799,14 @@ function initVelocityMarquees() {
   const marqueeContent = document.querySelector('.marquee-content');
   const marqueeContent2 = document.querySelector('.marquee-content-2');
 
+  let marqueeTween = null;
   if (marqueeContent) {
-    const marqueeTween = gsap.to(marqueeContent, {
+    marqueeTween = gsap.to(marqueeContent, {
       xPercent: -50,
       repeat: -1,
       duration: 15,
       ease: 'linear'
     });
-
-    if (lenis && !reduceMotion) {
-      lenis.on('scroll', (e) => {
-        const velocity = Math.abs(e.velocity || 0);
-        gsap.to(marqueeTween, {
-          timeScale: 1 + Math.min(velocity / 15, 6),
-          duration: 0.3,
-          ease: 'power2.out'
-        });
-      });
-    }
   }
 
   if (marqueeContent2) {
@@ -818,10 +817,23 @@ function initVelocityMarquees() {
       ease: 'linear'
     });
   }
-  
+
+  // Consolidated Lenis scroll listener for all velocity-based effects
   if (lenis && !reduceMotion) {
     lenis.on('scroll', (e) => {
       const velocity = e.velocity || 0;
+      const absVelocity = Math.abs(velocity);
+
+      // Marquee speed boost
+      if (marqueeTween) {
+        gsap.to(marqueeTween, {
+          timeScale: 1 + Math.min(absVelocity / 15, 6),
+          duration: 0.3,
+          ease: 'power2.out'
+        });
+      }
+
+      // Velocity-based skew on cards
       const skewXAmount = Math.min(Math.max(velocity * -0.5, -15), 15);
       gsap.to('.portfolio-item, .profile-card', {
         skewX: skewXAmount,
@@ -867,6 +879,7 @@ window.cleanupSIC = function() {
   destroyMetrics();
   destroyPortfolio();
   destroyNavigation();
+  destroyLeadership();
   
   if (lenis) {
     lenis.destroy();

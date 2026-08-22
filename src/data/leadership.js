@@ -1,6 +1,9 @@
 /**
  * Leadership team — source of truth for the Leadership & Advisory grid.
  * Fields marked empty stay empty; UI hides missing LinkedIn / email buttons.
+ *
+ * FIXME: 7/10 roles are still 'XYZ Role', all emails are placeholder@domain.com,
+ * and LinkedIn URLs point to incorrect profiles. Update with real data before launch.
  */
 export const LEADERSHIP_TEAM = [
   {

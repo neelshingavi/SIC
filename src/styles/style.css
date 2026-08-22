@@ -34,9 +34,10 @@ html {
   overflow-x: hidden;
 }
 
-body {
-  cursor: none;
-  /* Hide default cursor */
+@media (hover: hover) and (pointer: fine) {
+  body {
+    cursor: none;
+  }
 }
 
 /* ========================================
@@ -212,7 +213,7 @@ body {
 
 .btn-secondary {
   background: transparent;
-  color: var(--color-text-dark);
+  color: var(--color-text-main);
   border: 1px solid rgba(0, 0, 0, 0.2);
   padding: 0.8rem 2rem;
   border-radius: 4px;
@@ -909,8 +910,8 @@ h4 {
   inset: 0;
   width: 100%;
   height: 100%;
-  z-index: 1;
-  /* Above background, but below content */
+  z-index: 0;
+  /* Behind hero-distortion canvas (z-index 1) */
   pointer-events: none;
 }
 
@@ -972,7 +973,7 @@ h4 {
 
 .hero-subtitle {
   font-size: 1.25rem;
-  color: var(--color-text-main);
+  color: rgba(255, 255, 255, 0.85);
   margin-bottom: 2.5rem;
 }
 
@@ -2259,7 +2260,6 @@ button.hamburger {
 
 .ecosystem-info {
   position: absolute;
-  z-index: 3;
   top: 0;
   left: 0;
   width: 240px;

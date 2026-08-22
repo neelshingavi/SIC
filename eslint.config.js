@@ -21,7 +21,16 @@ export default [
         SVGPathElement: 'readonly',
         SVGCircleElement: 'readonly',
         SVGPolylineElement: 'readonly',
-        console: 'readonly'
+        console: 'readonly',
+        IntersectionObserver: 'readonly',
+        ResizeObserver: 'readonly',
+        Image: 'readonly',
+        AudioContext: 'readonly',
+        webkitAudioContext: 'readonly',
+        innerWidth: 'readonly',
+        innerHeight: 'readonly',
+        Node: 'readonly',
+        alert: 'readonly'
       }
     },
     rules: {
