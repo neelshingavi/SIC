@@ -38,9 +38,10 @@ function renderActionButtons(member) {
   }
 
   if (member.email) {
+    const emailHref = member.email.startsWith('mailto:') ? member.email : `mailto:${member.email}`;
     buttons.push(`
       <a
-        href="mailto:${member.email}"
+        href="${emailHref}"
         class="profile-action-btn profile-action-btn--mail"
         aria-label="Email ${member.name}"
       >
@@ -51,7 +52,7 @@ function renderActionButtons(member) {
 
   if (!buttons.length) return '';
 
-  return `<div class="profile-actions">${buttons.join('')}</div>`;
+  return `<div class="profile-actions" aria-label="Contact links for ${member.name}">${buttons.join('')}</div>`;
 }
 
 function renderCard(member) {
