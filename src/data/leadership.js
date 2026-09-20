@@ -11,68 +11,113 @@
 export const LEADERSHIP_TEAM = [
   {
     name: 'Siddhant Patil',
-    role: 'XYZ Role', // TODO: fill in role
+    role: 'public relations head',
     linkedin: '',
     email: '',
     photo: {
-      avif: '/images/team_image.avif',
-      webp: '/images/team_image.webp',
-      png: '/images/team_image.png',
+      avif: '/images/council/siddhant-patil.avif',
+      webp: '/images/council/siddhant-patil.webp',
+      png: '/images/council/siddhant-patil.png',
     },
   },
   {
     name: 'Tanvi Malviya',
-    role: 'XYZ Role', // TODO: fill in role
+    role: 'general secretary',
     linkedin: '',
     email: '',
+    photo: {
+      avif: '/images/council/tanvi-malviya.avif',
+      webp: '/images/council/tanvi-malviya.webp',
+      png: '/images/council/tanvi-malviya.png',
+    },
   },
   {
     name: 'Ameya Surve',
     role: 'President',
     linkedin: '',
     email: '',
+    photo: {
+      avif: '/images/council/ameya-surve.avif',
+      webp: '/images/council/ameya-surve.webp',
+      png: '/images/council/ameya-surve.png',
+    },
   },
   {
     name: 'Neel Shingavi',
     role: 'Technical Head',
     linkedin: '',
     email: '',
+    photo: {
+      avif: '/images/council/neel-shingavi.avif',
+      webp: '/images/council/neel-shingavi.webp',
+      png: '/images/council/neel-shingavi.png',
+    },
   },
   {
     name: 'Shrawani Chowkone',
-    role: 'Video Editing',
+    role: 'Video Editing Head',
     linkedin: '',
     email: '',
+    photo: {
+      avif: '/images/council/shrawani-chowkone.avif',
+      webp: '/images/council/shrawani-chowkone.webp',
+      png: '/images/council/shrawani-chowkone.png',
+    },
   },
   {
     name: 'Aditya Birajdar',
-    role: 'XYZ Role', // TODO: fill in role
+    role: 'Events Head',
     linkedin: '',
     email: '',
+    photo: {
+      avif: '/images/council/aditya-birajdar.avif',
+      webp: '/images/council/aditya-birajdar.webp',
+      png: '/images/council/aditya-birajdar.png',
+    },
   },
   {
     name: 'Shrawani Nikam',
-    role: 'XYZ Role', // TODO: fill in role
+    role: 'Social Media Head',
     linkedin: '',
     email: '',
+    photo: {
+      avif: '/images/council/shrawani-nikam.avif',
+      webp: '/images/council/shrawani-nikam.webp',
+      png: '/images/council/shrawani-nikam.png',
+    },
   },
   {
     name: 'Ahan Mhadgut',
-    role: 'XYZ Role', // TODO: fill in role
+    role: 'Content Head',
     linkedin: '',
     email: '',
+    photo: {
+      avif: '/images/council/ahan-mhadgut.avif',
+      webp: '/images/council/ahan-mhadgut.webp',
+      png: '/images/council/ahan-mhadgut.png',
+    },
   },
   {
     name: 'Amisha Mamtani',
-    role: 'XYZ Role', // TODO: fill in role
+    role: 'Marketing Head',
     linkedin: '',
     email: '',
+    photo: {
+      avif: '/images/council/amisha-mamtani.avif',
+      webp: '/images/council/amisha-mamtani.webp',
+      png: '/images/council/amisha-mamtani.png',
+    },
   },
   {
     name: 'Anushtubh Ghasing',
-    role: 'XYZ Role', // TODO: fill in role
+    role: 'Marketing Head',
     linkedin: '',
     email: '',
+    photo: {
+      avif: '/images/council/anushtubh-ghasing.avif',
+      webp: '/images/council/anushtubh-ghasing.webp',
+      png: '/images/council/anushtubh-ghasing.png',
+    },
   },
 ];
 
