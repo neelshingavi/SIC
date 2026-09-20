@@ -354,7 +354,9 @@ html {
 .skip-intro {
   position: absolute;
   bottom: 3rem;
+  bottom: calc(3rem + env(safe-area-inset-bottom)); /* Fix 8: clear home indicator on notched iPhones */
   right: 3rem;
+  right: calc(3rem + env(safe-area-inset-right));
   font-family: var(--font-sans);
   font-size: 0.85rem;
   font-weight: 600;
@@ -746,7 +748,11 @@ h4 {
   gap: 5px;
   cursor: pointer;
   z-index: 1001;
-  padding: 8px;
+  padding: 10px; /* Fix 9: effective tap area = 24px bars + 10px padding × 2 = 44px */
+  min-width: 44px;
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
 }
 
 .hamburger span {
@@ -771,6 +777,7 @@ h4 {
   width: 100%;
   max-width: 400px;
   height: 100vh;
+  height: 100dvh; /* Fix 5: prevent address-bar jump on iOS Safari / Chrome Android */
   background-color: #3d070a;
   background-image: image-set(url('/images/red-texture.avif') type('image/avif'),
       url('/images/red-texture.webp') type('image/webp'),
@@ -785,6 +792,7 @@ h4 {
   justify-content: center;
   visibility: hidden;
   pointer-events: none;
+  padding-bottom: env(safe-area-inset-bottom); /* Fix 8: drawer content clears home indicator */
 }
 
 .mobile-drawer[aria-hidden='false'] {
@@ -841,6 +849,7 @@ h4 {
 .hero {
   position: relative;
   min-height: 85vh;
+  min-height: 85svh; /* Fix 5: prevent address-bar jump on iOS Safari / Chrome Android */
   display: flex;
   align-items: center;
   background: url('/images/about_image.png') center/cover;
@@ -1298,6 +1307,20 @@ h4 {
   transform: scale(1.05);
 }
 
+/* Differentiate placeholder portfolio images until real assets arrive */
+.portfolio-item:nth-child(2) .portfolio-img img,
+.portfolio-item:nth-child(2) .portfolio-img source {
+  filter: hue-rotate(90deg);
+}
+.portfolio-item:nth-child(3) .portfolio-img img,
+.portfolio-item:nth-child(3) .portfolio-img source {
+  filter: hue-rotate(180deg);
+}
+.portfolio-item:nth-child(4) .portfolio-img img,
+.portfolio-item:nth-child(4) .portfolio-img source {
+  filter: hue-rotate(270deg);
+}
+
 .portfolio-info {
   position: absolute;
   bottom: 0;
@@ -1535,6 +1558,19 @@ h4 {
   .profile-card:hover .profile-actions {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+/* Fix 1: Leadership contact buttons — always visible on touch devices */
+@media (hover: none) and (pointer: coarse) {
+  .profile-actions {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .profile-action-btn {
+    width: 44px;
+    height: 44px;
   }
 }
 
@@ -1826,6 +1862,13 @@ h4 {
   }
 }
 
+/* Fix 3: Ecosystem container height — fill the dead breakpoint gap between tablet and desktop */
+@media (max-width: 1200px) and (min-width: 769px) {
+  .ecosystem-container {
+    height: 550px;
+  }
+}
+
 @media (max-width: 1200px) {
   .leadership-grid {
     grid-template-columns: repeat(3, 1fr);
@@ -1864,7 +1907,8 @@ h4 {
     display: none;
   }
 
-  .nav-actions {
+  /* Fix 4: only hide the sound toggle — keep Apply Now visible in navbar */
+  .nav-actions .sound-toggle {
     display: none;
   }
 
@@ -2047,7 +2091,58 @@ h4 {
     font-size: 0.66rem;
   }
 
-  /* Native swipeable portfolio on mobile — no scroll-jacking */
+  .ecosystem-container {
+    height: 650px;
+  }
+
+  .eco-node-center .eco-node {
+    width: 60px;
+    height: 60px;
+  }
+
+  .eco-node-center img {
+    width: 36px;
+    height: 36px;
+  }
+
+  .eco-node-cluster .eco-node {
+    width: 44px;
+    height: 44px;
+  }
+
+  .eco-node-leaf .eco-node {
+    width: 32px;
+    height: 32px;
+  }
+
+  .eco-node-label {
+    font-size: 0.75rem;
+    transform: translateX(-50%) translateY(8px);
+  }
+
+  .profile-info h4 {
+    font-size: 0.95rem;
+  }
+
+  .profile-info p {
+    font-size: 0.7rem;
+  }
+
+  .form-container {
+    padding: 1.5rem;
+  }
+
+  .skip-intro {
+    bottom: 2rem;
+    bottom: calc(2rem + env(safe-area-inset-bottom));
+    right: 2rem;
+    right: calc(2rem + env(safe-area-inset-right));
+  }
+}
+
+/* Fix 6 (CSS): Portfolio native-swipe layout — matches the JS breakpoint of 993px.
+   Between 769–992px the GSAP pin is no longer active, so this layout must also apply. */
+@media (max-width: 992px) {
   .portfolio-scroll-section {
     height: auto;
   }
@@ -2090,52 +2185,6 @@ h4 {
   .portfolio-info p {
     font-size: 0.85rem;
   }
-
-  .ecosystem-container {
-    height: 400px;
-  }
-
-  .eco-node-center .eco-node {
-    width: 60px;
-    height: 60px;
-  }
-
-  .eco-node-center img {
-    width: 36px;
-    height: 36px;
-  }
-
-  .eco-node-cluster .eco-node {
-    width: 44px;
-    height: 44px;
-  }
-
-  .eco-node-leaf .eco-node {
-    width: 32px;
-    height: 32px;
-  }
-
-  .eco-node-label {
-    font-size: 0.75rem;
-    transform: translateX(-50%) translateY(8px);
-  }
-
-  .profile-info h4 {
-    font-size: 0.95rem;
-  }
-
-  .profile-info p {
-    font-size: 0.7rem;
-  }
-
-  .form-container {
-    padding: 1.5rem;
-  }
-
-  .skip-intro {
-    bottom: 2rem;
-    right: 2rem;
-  }
 }
 
 @media (max-width: 576px) {
@@ -2160,7 +2209,7 @@ h4 {
   }
 
   .ecosystem-container {
-    height: 400px;
+    height: 650px;
   }
 }
 

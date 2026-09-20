@@ -11,7 +11,9 @@ export function initPortfolio(reduceMotion = false) {
 
   mm = gsap.matchMedia();
 
-  mm.add('(min-width: 769px)', () => {
+  // Fix 6: raise breakpoint from 769px → 993px so tablets/landscape phones
+  // get native swipe-snap instead of the GSAP-pinned scrub (which fights touch-drag)
+  mm.add('(min-width: 993px)', () => {
     if (reduceMotion) {
       portfolioTrack.style.overflowX = 'auto';
       portfolioTrack.style.scrollSnapType = 'x mandatory';
@@ -55,7 +57,7 @@ export function initPortfolio(reduceMotion = false) {
     }
   });
 
-  mm.add('(max-width: 768px)', () => {
+  mm.add('(max-width: 992px)', () => {
     portfolioTrack.style.overflowX = 'auto';
     portfolioTrack.style.scrollSnapType = 'x mandatory';
     portfolioTrack.querySelectorAll('.portfolio-item').forEach(el => {

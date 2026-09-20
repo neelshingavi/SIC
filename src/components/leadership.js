@@ -9,12 +9,28 @@ const LINKEDIN_ICON = `
   </svg>
 `;
 
+// Derives width-variant filenames (e.g. /images/team_image.avif ->
+// /images/team_image-300.avif) matching scripts/generate-responsive-images.js output.
+function withWidth(path, width) {
+  const idx = path.lastIndexOf('.');
+  return `${path.slice(0, idx)}-${width}${path.slice(idx)}`;
+}
+
+function buildSrcset(path, widths) {
+  return widths.map((w) => `${withWidth(path, w)} ${w}w`).join(', ');
+}
+
+const CARD_WIDTHS = [300, 600, 900];
+// Leadership cards run 5-across on desktop (~220-280px) down to 2-across on
+// phones (~40-45vw) — see .leadership-grid breakpoints in style.css.
+const CARD_SIZES = '(max-width: 768px) 42vw, (max-width: 1400px) 22vw, 220px';
+
 function renderPhoto(member) {
   const photo = getMemberPhoto(member);
   return `
     <picture>
-      <source srcset="${photo.avif}" type="image/avif">
-      <source srcset="${photo.webp}" type="image/webp">
+      <source srcset="${buildSrcset(photo.avif, CARD_WIDTHS)}" sizes="${CARD_SIZES}" type="image/avif">
+      <source srcset="${buildSrcset(photo.webp, CARD_WIDTHS)}" sizes="${CARD_SIZES}" type="image/webp">
       <img src="${photo.png}" alt="${member.name}" width="400" height="533" loading="lazy">
     </picture>
   `;

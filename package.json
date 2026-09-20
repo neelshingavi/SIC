@@ -22,7 +22,9 @@
     "format": "prettier --write .",
     "test": "vitest run",
     "test:watch": "vitest",
-    "analyze": "vite build"
+    "analyze": "vite build",
+    "images:optimize": "node scripts/optimize-images.js",
+    "images:responsive": "node scripts/generate-responsive-images.js"
   },
   "devDependencies": {
     "eslint": "^10.8.0",

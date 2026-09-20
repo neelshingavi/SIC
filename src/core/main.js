@@ -3,7 +3,6 @@
 // Modularized, resilient, and performant subsystem orchestration
 // =====================================================================
 
-import '../styles/style.css';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Observer } from 'gsap/Observer';
@@ -335,10 +334,11 @@ function initAnimations() {
   initHeadings();
   initMetrics(reduceMotion);
   initPortfolio(reduceMotion);
-  initCursor(reduceMotion);
   initNavigation(lenis, reduceMotion);
   initParallax();
   initLeadership(reduceMotion);
+  initCursor(reduceMotion); // must run after initLeadership() — it queries .profile-card,
+                            // which doesn't exist in the DOM until leadership cards are rendered
   initForm();
   initEasterEggsAndSounds();
   initScrollReveals();
@@ -355,7 +355,7 @@ function initWebGL() {
       trigger: heroEl,
       start: 'top bottom',
       once: true,
-      onEnter: () => initGrain(0.045)
+      onEnter: () => { if (window.innerWidth > 992) initGrain(0.045); } // Fix 7: skip grain shader on mobile
     });
 
     if (window.innerWidth > 992) {
